@@ -1,9 +1,9 @@
 public class Salmon extends Fish {
 
-    // Constructor C: No-args Salmon Constructor
+    /*// Constructor C: No-args Salmon Constructor
     public Salmon() {
 
-    }
+    }*/
 
     /*
     // Constructor D: Salmon Constructor with an int parameter
