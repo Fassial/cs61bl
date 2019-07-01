@@ -28,9 +28,11 @@ public class TracedPoint extends Point {
 
         System.out.println("p1 is " + p1);
         System.out.println("p2 is " + p2);
-		/*TracedPoint tp = new TracedPoint(2, 3);
+		/*
+		TracedPoint tp = new TracedPoint(2, 3);
 		printPoint(tp);
-		System.out.println(tp);*/
+		System.out.println(tp);
+		*/
 		//TracedPoint tp = new TracedPoint();
 		
     }
