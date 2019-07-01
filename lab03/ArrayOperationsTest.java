@@ -5,6 +5,11 @@ public class ArrayOperationsTest {
         ArrayOperations.insert(values, 0, 0);
         int[] afterInsert1 = {0, 1, 2, 3, 4};
         if (!check(afterInsert1, values)) {
+			/*
+			for(int i = 0;i < values.length;i++) {
+				System.out.print(values[i]);
+			}
+			System.out.println();*/
             return false;
         }
 

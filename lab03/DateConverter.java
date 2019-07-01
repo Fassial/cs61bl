@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.Scanner;
 
 public class DateConverter {
     /**
@@ -16,12 +17,19 @@ public class DateConverter {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
+		while(dayOfYear <= 0 || dayOfYear >= 366) {
+			System.out.print("The value of dayOfYear should be 1 ~ 365.Please try again: ");
+			Scanner reader = new Scanner(System.in);
+			dayOfYear = reader.nextInt();
+		}
 
         int month, dateInMonth, daysInMonth;
         month = 1;
         daysInMonth = 31;
         while (dayOfYear > daysInMonth) {
             // TODO: Here is one place to put assignment statements.
+			dayOfYear -= daysInMonth;
+			month += 1;
             if (month == 2) {
                 daysInMonth = 28;
             } else if (month == 4 || month == 6 || month == 9 || month == 11) {
