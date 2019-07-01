@@ -15,19 +15,19 @@ public class SieveOfEratosthenes {
 				continue;
 			} else {
 				//THIS DATA HAS BEEN CORRUPTED; REPLACE IT!
-				if(i == 0 || i == 1) {
+				if(i + 1 == 1) {
 					continue;
 				}
-				for(int j = i;j < upperBound;j++) {
-					if(j % i == 0 && j != i) {
-						isNotPrime[j] = true;
+				for(int j = i + 1;j <= upperBound;j++) {
+					if(j % (i + 1) == 0 && j != (i + 1)) {
+						isNotPrime[j - 1] = true;
 					}
 				}
 			}
 		}
 		for (int i = 0; i < upperBound; i++) {
 			if (!isNotPrime[i]) {
-				System.out.println(i + " is a prime number.");
+				System.out.println((i + 1) + " is a prime number.");
 			}
 		}
 	}
