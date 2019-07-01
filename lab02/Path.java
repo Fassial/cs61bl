@@ -37,7 +37,7 @@ public class Path {
 	public void iterate(double dx, double dy) {
 		this.curr.setX(this.next.getX());
 		this.curr.setY(this.next.getY());
-		this.next.setX(dx);
-		this.next.setY(dy);
+		this.next.setX(this.next.getX() + dx);
+		this.next.setY(this.next.getY() + dy);
 	}
 }
