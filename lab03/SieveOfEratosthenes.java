@@ -32,6 +32,8 @@ public class SieveOfEratosthenes {
 			if (!isNotPrime[i]) {
 				// System.out.println(i + " is a prime number.");
 				System.out.println(i);
+			} else {
+				System.out.println();
 			}
 		}
 	}
