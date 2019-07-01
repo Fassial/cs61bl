@@ -15,12 +15,12 @@ public class SieveOfEratosthenes {
 				continue;
 			} else {
 				//THIS DATA HAS BEEN CORRUPTED; REPLACE IT!
-				if(i == 0) {
+				if(i == 0 || i == 1) {
 					isNotPrime[i] = true;
 					continue;
-				} else if(i == 1) {
+				}/* else if(i == 1) {
 					continue;
-				}
+				}*/
 				for(int j = i;j < upperBound;j++) {
 					if(j % i == 0 && j != i) {
 						isNotPrime[j] = true;
