@@ -10,6 +10,9 @@ public class DebugExercise3 {
                 int newTotal = totalTurnips + numAvailable;
                 totalTurnips = newTotal;
             }
+			/** BUG IN CSV FILE
+			 *		kroger turnip 0.45 -387128732
+			 */
         }
         return totalTurnips;
     }

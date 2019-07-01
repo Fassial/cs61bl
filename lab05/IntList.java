@@ -50,7 +50,17 @@ public class IntList {
      */
     public int get(int position) {
         // YOUR CODE HERE
-        return -1;
+		IntList p = this;
+		int index = 0;
+		while(p != null) {
+			if(index == position) {
+				return p.item;
+			}
+			p = p.next;
+			index++;
+		}
+		throw new IllegalArgumentException("Position out of range!");
+        // return -1;
     }
 
     /**
@@ -61,7 +71,21 @@ public class IntList {
      */
     public String toString() {
         // YOUR CODE HERE
-        return null;
+		String str = "";
+		IntList p = this;
+		while(p.next != null) {
+			// str += p.item.toString() + " ";		WRONG!!!
+			/**	Examoples:
+			 * 		String.valueOf(i)
+			 * 		Integer.toString(i)
+			 * 		i + ""
+			**/
+			str += p.item + " ";
+			p = p.next;
+		}
+		str += p.item + "";
+		return str;
+        //return null;
     }
 
     /**
@@ -72,7 +96,29 @@ public class IntList {
      */
     public boolean equals(Object obj) {
         // YOUR CODE HERE
-        return false;
+		IntList p = this;
+		IntList q = null;
+		/** How to judge if q is a instance of IntList
+		 *		q instanceof IntList
+		 *		q.getClass() == IntList.getClass()
+		 */
+		if(obj instanceof IntList) {
+			q = (IntList) obj;
+		} else {
+			// return false;
+		}
+		while(p != null && q != null) {
+			if(p.item != q.item) {
+				return false;
+			}
+			p = p.next;
+			q = q.next;
+		}
+		if((p == null && q != null) || (p != null && q == null)) {
+			return false;
+		}
+		return true;
+        // return false;
     }
 
     /**
@@ -82,6 +128,12 @@ public class IntList {
      */
     public void add(int value) {
         // YOUR CODE HERE
+		IntList p = this;
+		while(p.next != null) {
+			p = p.next;
+		}
+		IntList tail = new IntList(value);
+		p.next = tail;
     }
 
     /**
@@ -91,7 +143,16 @@ public class IntList {
      */
     public int smallest() {
         // YOUR CODE HERE
-        return -1;
+		IntList p = this;
+		int smallest = p.item;
+		while(p != null) {
+			if(smallest > p.item) {
+				smallest = p.item;
+			}
+			p = p.next;
+		}
+		return smallest;
+        // return -1;
     }
 
     /**
@@ -101,7 +162,14 @@ public class IntList {
      */
     public int squaredSum() {
         // YOUR CODE HERE
-        return -1;
+		IntList p = this;
+		int squaredSum = 0;
+		while(p != null) {
+			squaredSum += Math.pow(p.item, 2);
+			p = p.next;
+		}
+		return squaredSum;
+        // return -1;
     }
 
     /**
@@ -158,7 +226,13 @@ public class IntList {
      * @return new list with A followed by B.
      */
     public static IntList dcatenate(IntList A, IntList B) {
-        return null;
+        IntList p = A;
+		while(p.next != null) {
+			p = p.next;
+		}
+		p.next = B;
+		return A;
+		// return null;
     }
 
     /**
@@ -170,6 +244,22 @@ public class IntList {
      * @return new list with A followed by B.
      */
      public static IntList catenate(IntList A, IntList B) {
-         return null;
+        IntList p = A;
+		IntList q = new IntList(p.item), head = q;
+		while(p.next != null) {
+			p = p.next;
+			q.next = new IntList(p.item);
+			q = q.next;
+		}
+		p = B;
+		q.next = new IntList(p.item);
+		q = q.next;
+		while(p.next != null) {
+			p = p.next;
+			q.next = new IntList(p.item);
+			q = q.next;
+		}
+		return head;
+		// return null;
      }
 }
