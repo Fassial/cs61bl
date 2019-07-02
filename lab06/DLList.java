@@ -1,13 +1,8 @@
-import java.util.ArrayList;
-/**
- * An SLList is a list of integers, which encapsulates the
- * naked linked list structure.
- */
-public class SLList {
+public class DLList {
 
     /**
      * IntListNode is a nested class that represents a single node in the
-     * SLList, storing an item and a reference to the next IntListNode.
+     * DLList, storing an item and a reference to the next IntListNode.
      */
     private static class IntListNode {
         /*
@@ -16,10 +11,12 @@ public class SLList {
          * variables and methods.
          */
         public int item;
+		public IntListNode prev;
         public IntListNode next;
 
-        public IntListNode(int item, IntListNode next) {
+        public IntListNode(int item, IntListNode prev, IntListNode next) {
             this.item = item;
+			this.prev = prev;
             this.next = next;
         }
 
@@ -27,6 +24,7 @@ public class SLList {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
+			/** Here what the getClass() directly returns is the class of the instance created in the heap! **/
             IntListNode that = (IntListNode) o;
             return item == that.item;
         }
@@ -42,17 +40,21 @@ public class SLList {
     private IntListNode sentinel;
     private int size;
 
-    /** Creates an empty SLList. */
-    public SLList() {
-        sentinel = new IntListNode(42, null);
+    /** Creates an empty DLList. */
+    public DLList() {
+        sentinel = new IntListNode(42, null, null);
+		sentinel.prev = sentinel;
         sentinel.next = sentinel;
         size = 0;
     }
 
-    public SLList(int x) {
-        sentinel = new IntListNode(42, null);
-        sentinel.next = new IntListNode(x, null);
-        sentinel.next.next = sentinel;
+    public DLList(int x) {
+        sentinel = new IntListNode(42, null, null);
+		IntListNode p = new IntListNode(x, null, null);
+		sentinel.prev = p;
+		p.prev = sentinel;
+        sentinel.next = p;
+        p.next = sentinel;
         size = 1;
     }
 
@@ -60,13 +62,13 @@ public class SLList {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SLList slList = (SLList) o;
-        if (size != slList.size) return false;
+        DLList dlList = (DLList) o;
+        if (size != dlList.size) return false;
 
         IntListNode l1 = sentinel.next;
-        IntListNode l2 = slList.sentinel.next;
+        IntListNode l2 = dlList.sentinel.next;
 
-        while (l1 != sentinel && l2 != sentinel) {
+        while (l1 != sentinel && l2 != dlList.sentinel) {
             if (!l1.equals(l2)) return false;
             l1 = l1.next;
             l2 = l2.next;
@@ -87,9 +89,9 @@ public class SLList {
         return result.trim();
     }
 
-    /** Returns an SLList consisting of the given values. */
-    public static SLList of(int... values) {
-        SLList list = new SLList();
+    /** Returns an DLList consisting of the given values. */
+    public static DLList of(int... values) {
+        DLList list = new DLList();
         for (int i = values.length - 1; i >= 0; i -= 1) {
             list.addFirst(values[i]);
         }
@@ -103,7 +105,9 @@ public class SLList {
 
     /** Adds x to the front of the list. */
     public void addFirst(int x) {
-        sentinel.next = new IntListNode(x, sentinel.next);
+		IntListNode p = new IntListNode(x, sentinel, sentinel.next);
+		sentinel.next.prev = p;
+        sentinel.next = p;
         size += 1;
     }
 
@@ -127,24 +131,21 @@ public class SLList {
 		while(index-- >= 1) {
 			p = p.next;
 		}
-		p.next = new IntListNode(x, p.next);
+		IntListNode q = new IntListNode(x, p, p.next);
+		p.next.prev = q;
+		p.next = q;
 		this.size += 1;
     }
 
     /** Destructively reverses this list. */
     public void reverse() {
         // TODO
-		ArrayList<IntListNode> reverseHelper = new ArrayList<IntListNode>(this.size);
 		IntListNode p = this.sentinel;
-		for(int i = 0;i < this.size;i++) {
-			p = p.next;
-			reverseHelper.add(p);
+		while(p.next != sentinel) {
+			IntListNode q = p.next;
+			p.next = p.prev;
+			p.prev = q;
+			p = q;
 		}
-		p = sentinel;
-		for(int i = this.size - 1;i >= 0;i--) {
-			p.next = reverseHelper.get(i);
-			p = p.next;
-		}
-		p.next = sentinel;
     }
 }
