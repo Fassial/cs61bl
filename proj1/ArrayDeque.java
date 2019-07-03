@@ -13,7 +13,7 @@ public class ArrayDeque<T> implements Deque<T> {
 		this.numUse = Double.valueOf(this.size) / Double.valueOf(this.capacity);
 	}
 	
-	private int minus_1(int index) {
+	private int minusOne(int index) {
 		if (index == 0) {
 			return this.capacity - 1;
 		} else {
@@ -21,7 +21,7 @@ public class ArrayDeque<T> implements Deque<T> {
 		}
 	}
 	
-	private int plus_1(int index) {
+	private int plusOne(int index) {
 		if (index == this.capacity - 1) {
 			return 0;
 		} else {
@@ -30,10 +30,19 @@ public class ArrayDeque<T> implements Deque<T> {
 	}
 	
 	private void resize(int multiplier) {
-		T[] newArray = (T[])new Object[multiplier];
-		int realHead = plus_1(this.head);
-		System.arraycopy(this.items, realHead, newArray, 0, this.capacity - realHead);
-		System.arraycopy(this.items, 0, newArray, this.capacity - realHead, realHead);
+		T[] newArray = (T[]) new Object[multiplier];
+		int realHead = plusOne(this.head);
+		if (multiplier < this.capacity) {
+			if (this.capacity - realHead >= multiplier) {
+				System.arraycopy(this.items, realHead, newArray, 0, multiplier);
+			} else {
+				System.arraycopy(this.items, realHead, newArray, 0, this.capacity - realHead);
+				System.arraycopy(this.items, 0, newArray, this.capacity - realHead, multiplier - this.capacity + realHead);
+			}
+		} else {
+			System.arraycopy(this.items, realHead, newArray, 0, this.capacity - realHead);
+			System.arraycopy(this.items, 0, newArray, this.capacity - realHead, realHead);
+		}
 		this.items = newArray;
 		this.capacity = this.items.length;
 		this.head = this.capacity - 1;
@@ -44,12 +53,12 @@ public class ArrayDeque<T> implements Deque<T> {
 		if (this.size < this.capacity) {
 			this.items[this.head] = item;
 			this.size += 1;
-			this.head = minus_1(this.head);
+			this.head = minusOne(this.head);
 		} else {
 			this.resize(2 * this.capacity);
 			this.items[this.head] = item;
 			this.size += 1;
-			this.head = minus_1(this.head);
+			this.head = minusOne(this.head);
 		}
 		this.numUse = Double.valueOf(this.size) / Double.valueOf(this.capacity);
 		return;
@@ -59,12 +68,12 @@ public class ArrayDeque<T> implements Deque<T> {
 		if (this.size < this.capacity) {
 			this.items[this.tail] = item;
 			this.size += 1;
-			this.tail = plus_1(this.tail);
+			this.tail = plusOne(this.tail);
 		} else {
 			this.resize(2 * this.capacity);
 			this.items[this.tail] = item;
 			this.size += 1;
-			this.tail = plus_1(this.tail);
+			this.tail = plusOne(this.tail);
 		}
 		this.numUse = Double.valueOf(this.size) / Double.valueOf(this.capacity);
 		return;
@@ -82,46 +91,46 @@ public class ArrayDeque<T> implements Deque<T> {
 	
 	public void printDeque() {
 		for (int i = 0; i < this.size; i++) {
-			System.out.print(this.items[plus_1(this.head + i) % this.capacity] + " ");
+			System.out.print(this.items[plusOne(this.head + i) % this.capacity] + " ");
 		}
 		return;
 	}
 	
 	public T removeFirst() {
-		if (this.items[plus_1(this.head)] == null) {
+		if (this.items[plusOne(this.head)] == null) {
 			return null;
 		}
 		if (this.numUse < 0.25) {
 			this.resize(this.capacity / 2);
 		}
-		T item = this.items[plus_1(this.head)];
-		this.items[plus_1(this.head)] = null;
-		this.head = plus_1(this.head);
+		T item = this.items[plusOne(this.head)];
+		this.items[plusOne(this.head)] = null;
+		this.head = plusOne(this.head);
 		this.size -= 1;
 		this.numUse = Double.valueOf(this.size) / Double.valueOf(this.capacity);
 		return item;
 	}
 	
 	public T removeLast() {
-		if (this.items[plus_1(this.head)] == null) {
+		if (this.items[plusOne(this.head)] == null) {
 			return null;
 		}
 		if (this.numUse < 0.25) {
 			this.resize(this.capacity / 2);
 		}
-		T item = this.items[minus_1(this.tail)];
-		this.items[minus_1(this.tail)] = null;
-		this.tail = minus_1(this.tail);
+		T item = this.items[minusOne(this.tail)];
+		this.items[minusOne(this.tail)] = null;
+		this.tail = minusOne(this.tail);
 		this.size -= 1;
 		this.numUse = Double.valueOf(this.size) / Double.valueOf(this.capacity);
 		return item;
 	}
 	
 	public T get(int index) {
-		if (this.items[(plus_1(this.head) + index) % this.capacity] == null) {
+		if (this.items[(plusOne(this.head) + index) % this.capacity] == null) {
 			return null;
 		} else {
-			return this.items[(plus_1(this.head) + index) % this.capacity];
+			return this.items[(plusOne(this.head) + index) % this.capacity];
 		}
 	}
 }

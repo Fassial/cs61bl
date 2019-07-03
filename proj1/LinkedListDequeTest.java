@@ -51,9 +51,17 @@ public class LinkedListDequeTest {
 
             lld1.addFirst(10);
             assertFalse(lld1.isEmpty());
-
             lld1.removeFirst();
             assertTrue(lld1.isEmpty());
+			
+			lld1.addLast(0);
+			assertFalse(lld1.isEmpty());
+            lld1.removeFirst();
+            assertTrue(lld1.isEmpty());
+			
+			lld1.addLast(2);
+			assertFalse(lld1.isEmpty());
+			assertTrue(new Integer(2).equals(lld1.get(0)));
         } finally {
             System.out.println("Printing out deque: ");
             lld1.printDeque();

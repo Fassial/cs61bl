@@ -69,10 +69,11 @@ public class LinkedListDeque<T> implements Deque<T> {
 		}
 	}
 	
-	@Override
-	public boolean isEmpty() {
+	/** gradescope ask me to remove it or make it private **/
+	/*@Override
+	private boolean isEmpty() {
 		return this.size == 0;
-	}
+	}*/
 	
 	public int size() {
 		return this.size;
@@ -130,7 +131,7 @@ public class LinkedListDeque<T> implements Deque<T> {
 	}
 	
 	public T get(int index) {
-		if (index >= this.size - 1) {
+		if (index >= this.size) {
 			return null;
 		}
 		DequeNode p = this.head;
