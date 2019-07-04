@@ -15,6 +15,8 @@ public class MovingRotor extends Rotor {
     public MovingRotor(String name, Permutation perm, String notches) {
         super(name, perm);
         // FIXME - Assign any additional instance variables.
+		_notches = notches;
+        _permutation = perm;
     }
 
     // FIXME - This class inherits all of the information present in the
@@ -27,25 +29,68 @@ public class MovingRotor extends Rotor {
     //			to update any other methods in this class in order for it to
     //			behave as a moving Rotor? Check out Rotor and FixedRotor to
     //			see what methods might be different between these two classes.
+	
+	/** Return my norches. */
+    String getmynotche() {
+        return _notches;
+    }
 
     @Override // Use this special tag when updating the behavior of a method this class inherits from Rotor
     public boolean rotates() {
-        return false; // FIXME - How do we know whether this Rotor should rotate?
+        // return false; // FIXME - How do we know whether this Rotor should rotate?
+		return true;
     }
 
     @Override // Use this special tag when updating the behavior of a method this class inherits from Rotor
     public boolean atNotch() {
-        return false; // FIXME - How do we know whether this Rotor is at a notch?
+        // return false; // FIXME - How do we know whether this Rotor is at a notch?
+		String[] spnot = _notches.split("");
+        char [] temp = new char [spnot.length];
+        int [] temp2 = new int [spnot.length];
+        for (int i = 0; i < spnot.length; i += 1) {
+            temp[i] = spnot[i].charAt(0);
+            temp2[i] = _permutation.alphabet().toInt(temp[i]);
+        }
+        for (int k = 0; k < temp2.length; k += 1) {
+            if (super.setting() == _permutation.wrap(temp2[k] + 1)) {
+                return true;
+            }
+        }
+        return false;
+    }
+	
+	@Override
+    boolean trythis() {
+        String[] spnot = _notches.split("");
+        char [] temp = new char [spnot.length];
+        int [] temp2 = new int [spnot.length];
+        for (int i = 0; i < spnot.length; i += 1) {
+            temp[i] = spnot[i].charAt(0);
+            temp2[i] = _permutation.alphabet().toInt(temp[i]);
+        }
+        for (int k = 0; k < temp2.length; k += 1) {
+            if (super.setting() == _permutation.wrap(temp2[k])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override // Use this special tag when updating the behavior of a method this class inherits from Rotor
     public void advance() {
         // FIXME - What methods can we use to advance this Rotor by one position?
+		super.set(_permutation.wrap(super.setting() + 1));
     }
 
     // FIXME - How do we keep track of my notches?
 
     // FIXME: ADDITIONAL FIELDS HERE, AS NEEDED
+	/** addtional.*/
+    private String _notches;
+    /** addtional. */
+    private Permutation _permutation;
+    /** addtional. */
+    private Alphabet _alphabet;
 
     // To run this through command line, from the proj0 directory, run the following:
     // javac enigma/Rotor.java enigma/MovingRotor.java enigma/Permutation.java enigma/Alphabet.java enigma/CharacterRange.java enigma/EnigmaException.java

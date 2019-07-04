@@ -1,5 +1,7 @@
 package enigma;
 
+import java.util.Arrays;
+import java.util.ArrayList;
 import static enigma.EnigmaException.*;
 
 /** Class that represents a complete enigma machine.
@@ -14,16 +16,21 @@ public class Machine {
             Rotor[] allRotors) {
         _alphabet = alpha;
         // FIXME - Assign any additional instance variables.
+		_numRotors = numRotors;
+        _pawls = pawls;
+        _allPossible = new ArrayList<Rotor>(Arrays.asList(allRotors));
     }
 
     /** Return the number of rotor slots I have. */
     public int numRotors() {
-        return 0; // FIXME - How do we access the number of Rotor slots I have?
+        // return 0; // FIXME - How do we access the number of Rotor slots I have?
+		return _numRotors;
     }
 
     /** Return the number pawls (and thus rotating rotors) I have. */
     public int numPawls() {
-        return 0; // FIXME - How do we access the number of pawls I have?
+        // return 0; // FIXME - How do we access the number of pawls I have?
+		return _pawls; 
     }
 
     /** Set my rotor slots to the rotors named ROTORS from my set of
@@ -31,6 +38,15 @@ public class Machine {
      *  Initially, all rotors are set at their 0 setting. */
     public void insertRotors(String[] rotors) {
         // FIXME - How do we fill this Machine with Rotors, based on names of available Rotors?
+		for (int i = 0; i < rotors.length; i++) {
+            for (int j = 0; j < _allPossible.size(); j++) {
+                Rotor holder = _allPossible.get(j);
+                if (holder.name().equals(rotors[i])) {
+                    actualRotors[i] = holder;
+
+                }
+            }
+        }
     }
 
     /** Set my rotors according to SETTING, which must be a string of
@@ -38,11 +54,16 @@ public class Machine {
      *  leftmost rotor setting (not counting the reflector).  */
     public void setRotors(String setting) {
         // FIXME - How do we set the positions of each Rotor in this Machine?
+		for (int i = 0; i < setting.length(); i++) {
+            Alphabet staticPls = new UpperCaseAlphabet();
+            actualRotors[i + 1].set(staticPls.toInt(setting.charAt(i)));
+        }
     }
 
     /** Set the plugboard to PLUGBOARD. */
     public void setPlugboard(Permutation plugboard) {
         // FIXME - How do we assign our plugboard, based on a given Permutation?
+		_plugboard = plugboard;
     }
 
     /** Returns the result of converting the input character C (as an
@@ -53,7 +74,25 @@ public class Machine {
     	//			the appropriate Rotors. Then, send the signal into the
     	//			Plugboard, through the Rotors, bouncing off the Reflector,
     	//			back through the Rotors, then out of the Plugboard again.
-        return 0; // FIXME - How do we convert a single character index?
+        // return 0; // FIXME - How do we convert a single character index?
+		boolean start = actualRotors[4].atNotch();
+
+        actualRotors[4].advance();
+        if (actualRotors[3].atNotch() && !start) {
+            actualRotors[3].advance();
+        }
+        for (int i = actualRotors.length -1; i >= 0;  i -= 1) {
+            c = actualRotors[i].convertForward(c);
+        }
+        for (int i = 1; i < actualRotors.length; i ++) {
+            c = actualRotors[i].convertBackward(c);
+        }
+        return c;
+    }
+	
+	int convert(char c) {
+        int ch = c - 'A';
+        return convert(ch);
     }
 
     /** Optional helper method for convert() which rotates the necessary Rotors. */
@@ -65,7 +104,16 @@ public class Machine {
      *  the rotors accordingly. */
     public String convert(String msg) {
     	// HINT: Strings are basically just a series of characters
-        return ""; // FIXME - How do we convert an entire String?
+        // return ""; // FIXME - How do we convert an entire String?
+		String insideParts = "";
+        char[] chars = msg.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            insideParts += convert(chars[i]);
+            if ((i+1)%5 == 0) {
+                insideParts += " ";
+            }
+        }
+        return insideParts;
     }
 
     /** Common alphabet of my rotors. */
@@ -74,6 +122,22 @@ public class Machine {
     // FIXME - How do we keep track of my available Rotors/my Rotors/my pawls/my plugboard
 
     // FIXME: ADDITIONAL FIELDS HERE, IF NEEDED.
+	/** Number of rotors in Enigma machine. */
+    private int _numRotors;
+
+    /** Number of pawls in Engima machine. */
+    private int _pawls;
+
+    /** plugboard */
+    private Permutation _plugboard;
+
+    /** actual rotors */
+    private Rotor[] actualRotors = new Rotor[5];
+
+    /** collection of all possible rotors */
+    ArrayList<Rotor> _allPossible;
+
+    /** Rotor Array for all possible rotors */
 
     // To run this through command line, from the proj0 directory, run the following:
     // javac enigma/Machine.java enigma/Rotor.java enigma/FixedRotor.java enigma/Reflector.java enigma/MovingRotor.java enigma/Permutation.java enigma/Alphabet.java enigma/CharacterRange.java enigma/EnigmaException.java

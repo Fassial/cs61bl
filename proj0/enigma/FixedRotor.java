@@ -25,6 +25,18 @@ public class FixedRotor extends Rotor {
     //			these two classes.
 
     // HINT: Nothing to add here !
+	public boolean rotates() {
+        return false;
+    }
+
+    @Override
+    public boolean atNotch() {
+        return false;
+    }
+
+    @Override
+    public void advance() {
+    }
 
     // To run this through command line, from the proj0 directory, run the following:
     // javac enigma/Rotor.java enigma/FixedRotor.java enigma/Permutation.java enigma/Alphabet.java enigma/CharacterRange.java enigma/EnigmaException.java
