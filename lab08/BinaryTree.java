@@ -109,7 +109,11 @@ public class BinaryTree<T> {
     public int height() {
         // TODO
         // return -1;
-		return root.heightHelper();
+		if(root == null) {
+			return 0;
+		} else {
+			return root.heightHelper();
+		}
     }
 
     /* Returns true if the tree's left and right children are the same height
@@ -117,7 +121,11 @@ public class BinaryTree<T> {
     public boolean isCompletelyBalanced() {
         // TODO
         // return false;
-		return root.isCompletelyBalancedHelper();
+		if(root == null) {
+			return true;
+		} else {
+			return root.isCompletelyBalancedHelper();
+		}
     }
 
     public static BinaryTree<Integer> fibTree(int N) {
