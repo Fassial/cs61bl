@@ -18,7 +18,20 @@ public class BinaryTreeTest {
         assertEquals("a", tree1Contents.get(0));
 
         // TODO
-        fail("Add your own tests here, using the provided sample trees or your own trees.");
+        // fail("Add your own tests here, using the provided sample trees or your own trees.");
+		assertEquals(2, sampleTree1.height());
+		assertTrue(sampleTree1.isCompletelyBalanced());
+		assertTrue(sampleTree4.isCompletelyBalanced());
+		
+		// fib
+		BinaryTree<Integer> fib_0 = BinaryTree.fibTree(0);
+		fib_0.dispBTree();
+		BinaryTree<Integer> fib_1 = BinaryTree.fibTree(1);
+		fib_1.dispBTree();
+		BinaryTree<Integer> fib_2 = BinaryTree.fibTree(2);
+		fib_2.dispBTree();
+		BinaryTree<Integer> fib_4 = BinaryTree.fibTree(4);
+		fib_4.dispBTree();
     }
 
     // SAMPLE TREES

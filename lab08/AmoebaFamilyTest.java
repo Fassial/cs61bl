@@ -22,6 +22,7 @@ public class AmoebaFamilyTest {
         System.out.println("Here's the family:");
         family.print();
         System.out.println(family.longestName());
+        System.out.println(family.longestNameLength());
         fail("You must manually verify that the output is correct.");
     }
 

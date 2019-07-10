@@ -1,5 +1,6 @@
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ArrayList;
 
 public class BinaryTree<T> {
 
@@ -99,24 +100,52 @@ public class BinaryTree<T> {
         }
         return result;
     }
+	
+	public void setRoot(TreeNode<T> root) {
+		this.root = root;
+	}
 
     /* Returns the height of the tree. */
     public int height() {
         // TODO
-        return -1;
+        // return -1;
+		return root.heightHelper();
     }
 
     /* Returns true if the tree's left and right children are the same height
        and are themselves completely balanced. */
     public boolean isCompletelyBalanced() {
         // TODO
-        return false;
+        // return false;
+		return root.isCompletelyBalancedHelper();
     }
 
     public static BinaryTree<Integer> fibTree(int N) {
         // TODO
-        return null;
+        // return null;
+		if(N <= 1) {
+			ArrayList<Integer> contents = new ArrayList<>();
+			contents.add(N);
+			return new BinaryTree<>(contents);
+		} else {
+			BinaryTree<Integer> left = fibTree(N - 1);
+			BinaryTree<Integer> right = fibTree(N - 2);
+			TreeNode<Integer> p = new TreeNode<Integer>(left.root.item + right.root.item, null, null);
+			BinaryTree<Integer> btree_p = new BinaryTree<Integer>();
+			btree_p.setRoot(p);
+			p.setLeft(left.root);
+			p.setRight(right.root);
+			return btree_p;
+		}
     }
+	
+	public void dispBTree() {
+		List<T> result = this.getContents();
+		for(int i = 0;i < result.size();i++) {
+			System.out.print(result.get(i) + " ");
+		}
+		System.out.println();
+	}
 
     private static class TreeNode<T> {
 
@@ -135,5 +164,40 @@ public class BinaryTree<T> {
             this.left = left;
             this.right = right;
         }
+		
+		public void setLeft(TreeNode<T> left) {
+			this.left = left;
+		}
+		
+		public void setRight(TreeNode<T> right) {
+			this.right = right;
+		}
+		
+		public int heightHelper() {
+			if(this.left == null && this.right == null) {
+				return 1;
+			} else if(this.left == null) {
+				return 1 + this.right.heightHelper();
+			} else if(this.right == null) {
+				return 1 + this.left.heightHelper();
+			} else {
+				return 1 + Math.max(this.left.heightHelper(), this.right.heightHelper());
+			}
+		}
+		
+		public boolean isCompletelyBalancedHelper() {
+			if(this.left == null && this.right == null) {
+				return true;
+			} else if(this.left == null) {
+				return false;
+			} else if(this.right == null) {
+				return false;
+			} else {
+				boolean heightEqual = (this.left.heightHelper() == this.right.heightHelper());
+				boolean leftBalanced = this.left.isCompletelyBalancedHelper();
+				boolean rightBalanced = this.right.isCompletelyBalancedHelper();
+				return heightEqual && leftBalanced && rightBalanced;
+			}
+		}
     }
 }
