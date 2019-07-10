@@ -65,7 +65,8 @@ public class AmoebaFamily {
     /* Returns the longest name in this AmoebaFamily. */
     public String longestName() {
         // TODO
-        return null;
+        // return null;
+		return root.longestNameHelper();
     }
 
     /* An Amoeba is a node of an AmoebaFamily. */
@@ -115,5 +116,16 @@ public class AmoebaFamily {
             }
             return maxLengthSeen;
         }
+		
+		public String longestNameHelper() {
+			String maxStringSeen = name;
+			for (Amoeba a : children) {
+				String childMaxStringSeen = a.longestNameHelper();
+				if(maxStringSeen.length() < childMaxStringSeen.length()) {
+					maxStringSeen = childMaxStringSeen;
+				}
+            }
+			return maxStringSeen;
+		}
     }
 }
