@@ -7,6 +7,7 @@ public class ArrayDequeTest {
     public void yourTestHere() {
 
     }
+<<<<<<< HEAD
 
     @Test
     public void addIsEmptySizeTest() {
@@ -61,4 +62,6 @@ public class ArrayDequeTest {
             adl.printDeque();
         }
     }
+=======
+>>>>>>> 72aaffb24b3f96db64fd136257885eb5e2a1cc89
 }

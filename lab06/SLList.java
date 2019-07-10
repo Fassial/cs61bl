@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 import java.util.ArrayList;
+=======
+>>>>>>> 72aaffb24b3f96db64fd136257885eb5e2a1cc89
 /**
  * An SLList is a list of integers, which encapsulates the
  * naked linked list structure.
@@ -120,6 +123,7 @@ public class SLList {
     /** Adds x to the list at the specified index. */
     public void add(int index, int x) {
         // TODO
+<<<<<<< HEAD
 		if(index >= size) {
 			index = size;
 		}
@@ -129,11 +133,14 @@ public class SLList {
 		}
 		p.next = new IntListNode(x, p.next);
 		this.size += 1;
+=======
+>>>>>>> 72aaffb24b3f96db64fd136257885eb5e2a1cc89
     }
 
     /** Destructively reverses this list. */
     public void reverse() {
         // TODO
+<<<<<<< HEAD
 		ArrayList<IntListNode> reverseHelper = new ArrayList<IntListNode>(this.size);
 		IntListNode p = this.sentinel;
 		for(int i = 0;i < this.size;i++) {
@@ -146,5 +153,7 @@ public class SLList {
 			p = p.next;
 		}
 		p.next = sentinel;
+=======
+>>>>>>> 72aaffb24b3f96db64fd136257885eb5e2a1cc89
     }
 }
