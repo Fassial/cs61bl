@@ -18,12 +18,43 @@ public class AmoebaFamily {
     public void addChild(String parentName, String childName) {
         root.addChildHelper(parentName, childName);
     }
+	
+	private void printHelper(Amoeba p, Amoeba root) {
+		int deep;
+		if(p == root) {
+			deep = 0;
+		} else {
+			deep = 1;
+			Amoeba q = p;
+			while(q.parent != root) {
+				deep += 1;
+				q = q.parent;
+			}
+		}
+		for(int i = 0;i < deep;i++) {
+			System.out.print("    ");
+		}
+		System.out.println(p.name);
+		return;
+	}
+	
+	private void printDispHelper(Amoeba p, Amoeba root) {
+		if(p != null) {
+			printHelper(p, root);
+			if(p.children.size() != 0) {
+				for(int i = 0;i < p.children.size();i++) {
+					printDispHelper(p.children.get(i), root);
+				}
+			}
+		}
+	}
 
     /* Prints the name of all Amoebas in this AmoebaFamily in preorder, with
        the ROOT Amoeba printed first. Each Amoeba should be indented four spaces
        more than its parent. */
     public void print() {
         // TODO
+		printDispHelper(root, root);	
     }
 
     /* Returns the length of the longest name in this AmoebaFamily. */
