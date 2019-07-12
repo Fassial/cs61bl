@@ -15,7 +15,19 @@ public class BinaryTreeTest {
         assertEquals(10, (int) treeContents.get(0));
 
         // TODO
-        fail("Add your own tests here, using the provided sample tree or your own trees.");
+        // fail("Add your own tests here, using the provided sample tree or your own trees.");
+		tree.preorder();
+		System.out.println();
+		tree.inorder();
+		System.out.println();
+		tree.postorder();
+		System.out.println();
+		tree.dfs();
+		System.out.println();
+		tree.bfs();
+		System.out.println();
+		BinaryTree<Integer> sumPathsTestTree = sumPathsTree();
+		sumPathsTestTree.printSumPaths(13);
     }
 
     // SAMPLE TREES

@@ -106,6 +106,11 @@ public class BinaryTree<T> {
      */
     public void preorder() {
         // TODO
+		if (this.root == null) {
+			return;
+		} else {
+			this.root.preorderHelper();
+		}
     }
 
     /**
@@ -114,6 +119,11 @@ public class BinaryTree<T> {
      */
     public void inorder() {
         // TODO
+		if (this.root == null) {
+			return;
+		} else {
+			this.root.inorderHelper();
+		}
     }
 
     /**
@@ -122,6 +132,11 @@ public class BinaryTree<T> {
      */
     public void postorder() {
         // TODO
+		if (this.root == null) {
+			return;
+		} else {
+			this.root.postorderHelper();
+		}
     }
 
     /**
@@ -130,6 +145,27 @@ public class BinaryTree<T> {
      */
     public void dfs() {
         // TODO
+		if (this.root == null) {
+			return;
+		} else {
+			TreeNode p = this.root;
+			LinkedList<TreeNode> TreeNodeList = new LinkedList<TreeNode>();
+			while (p != null) {
+				System.out.print(p.item + " ");
+				if (p.right != null) {
+					TreeNodeList.addFirst(p.right);
+				}
+				if (p.left != null) {
+					TreeNodeList.addFirst(p.left);
+				}
+				if (TreeNodeList.size() != 0) {
+					p = TreeNodeList.removeFirst();
+				} else {
+					p = null;
+				}
+			}
+			return;
+		}
     }
 
     /**
@@ -138,6 +174,27 @@ public class BinaryTree<T> {
      */
     public void bfs() {
         // TODO
+		if (this.root == null) {
+			return;
+		} else {
+			TreeNode p = this.root;
+			LinkedList<TreeNode> TreeNodeList = new LinkedList<TreeNode>();
+			while (p != null) {
+				System.out.print(p.item + " ");
+				if (p.left != null) {
+					TreeNodeList.addLast(p.left);
+				}
+				if (p.right != null) {
+					TreeNodeList.addLast(p.right);
+				}
+				if (TreeNodeList.size() != 0) {
+					p = TreeNodeList.removeFirst();
+				} else {
+					p = null;
+				}
+			}
+			return;
+		}
     }
 
     /**
@@ -147,12 +204,38 @@ public class BinaryTree<T> {
      */
     public void printSumPaths(int k) {
         // FIXME
-        sumPaths(null, -1, null);
+        // sumPaths(null, -1, null);
+		if (this.root == null) {
+			return;
+		} else {
+			sumPaths(this.root, k, "");
+		}
     }
 
     private void sumPaths(TreeNode n, int k, String path) {
-        int currItem = (int) n.item;
-        // TODO
+        // int currItem = (int) n.item; 
+		int currItem = Integer.parseInt(n.item.toString());			// (String) n.item is unaccessible, for Integer cannot be tranmitted into String.
+        // TODO														// But the toString() method still can be used for this cast.
+		if (n.left == null && n.right == null) {
+			if (k == currItem) {
+				path += n.item;
+				System.out.println(path);
+				return;
+			} else {
+				return;
+			}
+		} else {
+			if (n.left != null) {
+				path = path + n.item + " ";
+				k -= currItem;
+				sumPaths(n.left, k, path);
+			}
+			if (n.right != null) {
+				path = path + n.item + " ";
+				k -= currItem;
+				sumPaths(n.right, k, path);
+			}
+		}
     }
 
     private class TreeNode {
@@ -172,5 +255,35 @@ public class BinaryTree<T> {
             this.left = left;
             this.right = right;
         }
+		
+		public void preorderHelper() {
+			System.out.print(this.item + " ");
+			if (this.left != null) {
+				this.left.preorderHelper();
+			}
+			if (this.right != null) {
+				this.right.preorderHelper();
+			}
+		}
+		
+		public void inorderHelper() {
+			if (this.left != null) {
+				this.left.inorderHelper();
+			}
+			System.out.print(this.item + " ");
+			if (this.right != null) {
+				this.right.inorderHelper();
+			}
+		}
+		
+		public void postorderHelper() {
+			if (this.left != null) {
+				this.left.postorderHelper();
+			}
+			if (this.right != null) {
+				this.right.postorderHelper();
+			}
+			System.out.print(this.item + " ");
+		}
     }
 }
