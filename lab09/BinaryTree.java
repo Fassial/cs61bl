@@ -226,14 +226,14 @@ public class BinaryTree<T> {
 			}
 		} else {
 			if (n.left != null) {
-				path = path + n.item + " ";
-				k -= currItem;
-				sumPaths(n.left, k, path);
+				String left_path = new String(path);
+				left_path = left_path + n.item + " ";
+				sumPaths(n.left, k - currItem, left_path);
 			}
 			if (n.right != null) {
-				path = path + n.item + " ";
-				k -= currItem;
-				sumPaths(n.right, k, path);
+				String right_path = new String(path);
+				right_path = right_path + n.item + " ";
+				sumPaths(n.right, k - currItem, right_path);
 			}
 		}
     }
