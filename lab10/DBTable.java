@@ -50,9 +50,9 @@ public class DBTable<T> {
     public <R extends Comparable<R>> List<T> getOrderedBy(Function<T, R> getter) {
         // TODO
         // return null;
-		List<T> OrderList = this.getEntries();
-		Collections.sort(OrderList, (o1, o2) -> (getter.apply(o1).compareTo(getter.apply(o2))));
-		return OrderList;
+        List<T> orderList = this.getEntries();
+        Collections.sort(orderList, (o1, o2) -> (getter.apply(o1).compareTo(getter.apply(o2))));
+        return orderList;
     }
 
     public static void main(String[] args) {

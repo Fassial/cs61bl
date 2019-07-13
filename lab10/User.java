@@ -76,14 +76,14 @@ public class User implements Comparable<User> {
     }
 
     @Override
-    public int compareTo(User o) {		// User o 参数的取值依赖于 Comparable<User>
+    public int compareTo(User o) {        // User o 参数的取值依赖于 Comparable<User>
         // TODO
         // return 0;
-		if (this.id != o.id) {
-			return this.id - o.id;
-		} else {
-			return this.name.compareTo(o.name);
-		}
+        if (this.id != o.id) {
+            return this.id - o.id;
+        } else {
+            return this.name.compareTo(o.name);
+        }
     }
 
     public static void main(String[] args) {

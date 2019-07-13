@@ -12,8 +12,8 @@ public class BinaryTreeTest {
         x.add("E");
         x.add("B");
         x.add("D");
-		assertTrue(x.contains("A"));
-		assertFalse(x.contains("F"));
+        assertTrue(x.contains("A"));
+        assertFalse(x.contains("F"));
         final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         PrintStream oldOut = System.out;
         System.setOut(new PrintStream(outContent));
