@@ -1,7 +1,7 @@
 import java.util.Arrays;
 import java.util.Objects;
 
-public class User {
+public class User implements Comparable<User> {
 
     private static int nextId = 1;
 
@@ -76,9 +76,14 @@ public class User {
     }
 
     @Override
-    public int compareTo(User o) {
+    public int compareTo(User o) {		// User o 参数的取值依赖于 Comparable<User>
         // TODO
-        return 0;
+        // return 0;
+		if (this.id != o.id) {
+			return this.id - o.id;
+		} else {
+			return this.name.compareTo(o.name);
+		}
     }
 
     public static void main(String[] args) {

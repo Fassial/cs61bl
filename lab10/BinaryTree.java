@@ -18,7 +18,7 @@ public class BinaryTree<T> {
             System.out.println("(empty tree)");
         } else {
             root.printPreorder();
-            System.out.println();
+            System.out.print("\n");
         }
     }
 
@@ -28,15 +28,15 @@ public class BinaryTree<T> {
             System.out.println("(empty tree)");
         } else {
             root.printInorder();
-            System.out.println();
+            System.out.print("\n");
         }
     }
 
     /* Prints the BinaryTree in preorder or in inorder. Used for testing. */
     protected static void print(BinaryTree t, String description) {
-        System.out.println(description + " in preorder");
+        System.out.print(description + " in preorder\n");
         t.printPreorder();
-        System.out.println(description + " in inorder");
+        System.out.print(description + " in inorder\n");
         t.printInorder();
         System.out.println();
     }
