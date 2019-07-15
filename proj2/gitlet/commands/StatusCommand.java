@@ -51,14 +51,36 @@ public class StatusCommand implements Command {
             System.out.println();
             
             // get staging
-            Staging staging = fileWriter.recoverStaging();
+            Staging staging = fileWriter.recoverStaging();            
+            // recover current commit
+            String currentCommitId = fileWriter.getCurrentHeadPointer();
+            Commit currentHead = fileWriter.recoverCommit(currentCommitId);
+            // String currentCommitObjectsFolder = ".gitlet/objects/" + currentCommitId;
+            List<String> fileList = new ArrayList<>();
+            FileSystemWriter.getFiles(fileWriter.getWorkingDirectory(), "", fileList);
+            List<String> untrackedFiles = new ArrayList<>();
+            List<String> trackedAddNRmFiles = new ArrayList<>();
+            if (currentHead.getFilePointers() != null) {
+                for (String fileName : currentHead.getFilePointers().keySet()) {
+                    trackedAddNRmFiles.add(fileName);
+                }
+            }
+            if (staging.getFilesToAdd().size() > 0){
+                for (String fileName : staging.getFilesToAdd()) {
+                    trackedAddNRmFiles.add(fileName);
+                }
+            }
+            Collections.sort(trackedAddNRmFiles);
+            
             // print files in filesToAdd.
             System.out.println("=== Staged Files ===");
             if (staging.getFilesToAdd().size() > 0){
                 List<String> filesToAdd = staging.getFilesToAdd();
                 Collections.sort(filesToAdd);
                 for (String file : filesToAdd){
-                    System.out.println(file);
+                    if (fileWriter.filesEqual(file, ".gitlet/staging/filesToAddFolder/" + file)) {
+                        System.out.println(file);
+                    }
                 }
             }
             System.out.println();
@@ -72,52 +94,42 @@ public class StatusCommand implements Command {
                     System.out.println(file);
                 }
             }
-            
-            // recover current commit
-            String currentCommitId = fileWriter.getCurrentHeadPointer();
-            Commit currentHead = fileWriter.recoverCommit(currentCommitId);
-            String currentCommitObjectsFolder = ".gitlet/objects/" + currentCommitId;
-            List<String> fileList = new ArrayList<>();
-            FileSystemWriter.getFiles(fileWriter.getWorkingDirectory(), "", fileList);
-            List<String> untrackedFiles = new ArrayList<>();
-            List<String> trackedAddNRmFiles = new ArrayList<>();
-            while (fileList.size() != 0) {
-                String fileName = fileList.remove(0);
-                // modify untrackedFiles
-                if (!currentHead.getFilePointers().containsKey(fileName)) {
-                    if (staging.getFilesToRm().size() > 0){
-                        if (!staging.getFilesToRm().contains(fileName)) {
-                            untrackedFiles.add(fileName);
-                        }
-                    } else {
-                        untrackedFiles.add(fileName);
-                    }
-                }
-            }
-            for (String fileName : currentHead.getFilePointers().keySet()) {
-                trackedAddNRmFiles.add(fileName);
-            }
-            if (staging.getFilesToAdd().size() > 0){
-                for (String fileName : staging.getFilesToAdd()) {
-                    trackedAddNRmFiles.add(fileName);
-                }
-            }
-            Collections.sort(trackedAddNRmFiles);
+            System.out.println();
             
             // print files Modifications Not Staged For Commit
             System.out.println("=== Modifications Not Staged For Commit ===");
             for (String fileName : trackedAddNRmFiles) {
                 if (!fileList.contains(fileName)) {
                     System.out.println(fileName + " (deleted)");
-                } else if (!fileWriter.filesEqual(fileName, currentCommitObjectsFolder + "/" + fileName)) {
+                } else if (!fileWriter.filesEqual(fileName, ".gitlet/staging/filesToAddFolder/" + fileName)) {
                     System.out.println(fileName + " (modified)");
                 }
             }
+            System.out.println();
             
             // print files untracked
             System.out.println("=== Untracked Files ===");
+            while (fileList.size() != 0) {
+                String fileName = fileList.remove(0);
+                // modify untrackedFiles
+                if (currentHead.getFilePointers() != null) {
+                    if (!currentHead.getFilePointers().containsKey(fileName)) {
+                        if (staging.getFilesToRm().size() > 0){
+                            if (!staging.getFilesToRm().contains(fileName)) {
+                                untrackedFiles.add(fileName);
+                            }
+                        } else {
+                            untrackedFiles.add(fileName);
+                        }
+                    }
+                } else {
+                    untrackedFiles.add(fileName);
+                }
+            }
             for (String fileName : untrackedFiles) {
-                System.out.println(fileName);
+                if (!fileWriter.filesEqual(fileName, ".gitlet/staging/filesToAddFolder/" + fileName)) {
+                    System.out.println(fileName);
+                }
             }
             return true;
         }

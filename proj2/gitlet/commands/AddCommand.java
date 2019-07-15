@@ -41,10 +41,13 @@ public class AddCommand implements Command {
                 Staging staging = fileWriter.recoverStaging();
                 if (staging.getFilesToAdd().contains(fileToAdd)) {
                     // if fileToAdd is alread in filesToAdd, just return true
+                    fileWriter.copyFile(fileToAdd, ".gitlet/staging/filesToAddFolder/" + fileToAdd);
                     return true;
                 } else if (staging.getFilesToRm().contains(fileToAdd)){
                     // if fileToAdd is in filesToRm, just remove it, resave staging area, and return true
                     staging.getFilesToRm().remove(fileToAdd);
+                    fileWriter.deleteFile(".gitlet/staging/filesToRmFolder/" + fileToAdd);
+                    fileWriter.copyFile(fileToAdd, ".gitlet/staging/filesToAddFolder/" + fileToAdd);
                     fileWriter.saveStaging(staging);
                     return true;
                 } else {
@@ -53,6 +56,7 @@ public class AddCommand implements Command {
                     String commitFile = ".gitlet/objects/" + headId + "/" + fileToAdd;
                     if (!fileWriter.exists(commitFile)){
                         staging.getFilesToAdd().add(fileToAdd);
+                        fileWriter.copyFile(fileToAdd, ".gitlet/staging/filesToAddFolder/" + fileToAdd);
                         fileWriter.saveStaging(staging);
                         return true;
                     } else {
@@ -64,6 +68,7 @@ public class AddCommand implements Command {
                             return false;
                         } else {
                             staging.getFilesToAdd().add(fileToAdd);
+                            fileWriter.copyFile(fileToAdd, ".gitlet/staging/filesToAddFolder/" + fileToAdd);
                             fileWriter.saveStaging(staging);
                             return true;
                         }

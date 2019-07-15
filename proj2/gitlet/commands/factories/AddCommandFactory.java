@@ -20,6 +20,9 @@ public class AddCommandFactory implements CommandFactory {
         if (args.length > 2) {
             System.out.println("Incorrect operands.");
             return null;
+        } else if (args.length < 2) {
+            System.out.println("Incorrect operands.");
+            return null;
         } else {
             return new AddCommand(args[1]);
         }

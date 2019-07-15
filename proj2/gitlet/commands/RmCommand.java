@@ -35,11 +35,14 @@ public class RmCommand implements Command {
             if (staging.getFilesToRm().contains(fileToRm)) {
                 // if fileToRM is alread in filesToRm, just
                 // return true
+                fileWriter.copyFile(fileToRm, ".gitlet/staging/filesToRmFolder/" + fileToRm);        // refresh
                 return true;
             } else if (staging.getFilesToAdd().contains(fileToRm)) {
                 // if fileToRm is in filesToAdd, just remove it,
                 // resave staging area, and return true
                 staging.getFilesToAdd().remove(fileToRm);
+                fileWriter.deleteFile(".gitlet/staging/filesToAddFolder/" + fileToRm);
+                fileWriter.copyFile(fileToRm, ".gitlet/staging/filesToRmFolder/" + fileToRm);
                 fileWriter.saveStaging(staging);
                 return true;
             } else {
@@ -49,6 +52,7 @@ public class RmCommand implements Command {
                 Commit headCommit = fileWriter.recoverCommit(headId);
                 if (headCommit.getFilePointers() != null && headCommit.getFilePointers().containsKey(fileToRm)){
                     staging.getFilesToRm().add(fileToRm);
+                    fileWriter.copyFile(fileToRm, ".gitlet/staging/filesToRmFolder/" + fileToRm);
                     fileWriter.saveStaging(staging);
                     return true;
                 } else {

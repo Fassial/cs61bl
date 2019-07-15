@@ -1,0 +1,37 @@
+rm -rf .gitlet
+rm -rf gitlet
+cd ..
+rm gitlet/*.class
+rm gitlet/commands/*.class
+rm gitlet/commands/factories/*.class
+javac gitlet/*.java
+mkdir test-gitlet/gitlet
+mkdir test-gitlet/gitlet/commands
+mkdir test-gitlet/gitlet/commands/factories
+cp gitlet/*.class test-gitlet/gitlet
+cp gitlet/commands/*.class test-gitlet/gitlet/commands
+cp gitlet/commands/factories/*.class test-gitlet/gitlet/commands/factories
+cd test-gitlet
+java gitlet.Main init
+java gitlet.Main add 1.txt
+java gitlet.Main status
+>>>modify 1.txt
+java gitlet.Main status
+>>>delete 1.txt
+java gitlet.Main status
+cp .gitlet/staging/filesToAddFolder/1.txt ./
+>>>modify 1.txt
+java gitlet.Main add 1.txt
+java gitlet.Main status
+java gitlet.Main rm 1.txt
+java gitlet.Main status
+java gitlet.Main rm 2.txt
+java gitlet.Main add 1.txt
+java gitlet.Main status
+java gitlet.Main commit
+java gitlet.Main commit "add 1.txt"
+java gitlet.Main find "add <<<invalibe
+java gitlet.Main find "add 1.txt"
+java gitlet.Main status
+java gitlet.Main log
+java gitlet.Main global-log

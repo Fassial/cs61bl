@@ -101,7 +101,7 @@ public class FileSystemWriter implements FileOriginWriter {
                 fileList.add(reletivePath + file.getName());
             } else {
                 if (file.isDirectory()) {
-                    if (!file.getAbsolutePath().equals("." + separator + ".gitlet")) {
+                    if (!file.getName().equals(".gitlet")) {
                         String nextReletivePath = reletivePath + file.getName() + separator;
                         getFiles(file.getAbsolutePath(), nextReletivePath, fileList);
                     } else {
@@ -280,6 +280,73 @@ public class FileSystemWriter implements FileOriginWriter {
             Files.copy(source.toPath(), dest.toPath(), StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+    
+    @Override
+    public boolean deleteFile(String fileName) {
+        File file = new File(fileName);
+        if (file.exists() && file.isFile()) {
+            if (file.delete()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * delete dir and including files
+     *
+     * @param dir
+     *        deleteCurrDir
+     * @return true / false
+     */
+    @Override
+    public boolean deleteDirectory(String dir, boolean deleteCurrDir) {
+        // not end with separator, add it
+        if (!dir.endsWith(File.separator)) {
+            dir = dir + File.separator;
+        }
+        File dirFile = new File(dir);
+        // not exist or not a dir -> exit
+        if ((!dirFile.exists()) || (!dirFile.isDirectory())) {
+            return false;
+        }
+        boolean flag = true;
+        // delete all dirs and files in root dir
+        File[] files = dirFile.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            // delete child files
+            if (files[i].isFile()) {
+                flag = this.deleteFile(files[i].getAbsolutePath());
+                if (!flag) {
+                    break;
+                }
+            }
+            // delete child dirs
+            else if (files[i].isDirectory()) {
+                flag = this.deleteDirectory(files[i].getAbsolutePath(), true);
+                if (!flag) {
+                    break;
+                }
+            }
+        }
+        if (!flag) {
+            return false;
+        } else {
+            if (deleteCurrDir) {
+                // remove current dir
+                if (dirFile.delete()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return true;
+            }
         }
     }
     

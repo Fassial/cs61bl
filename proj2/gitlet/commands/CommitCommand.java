@@ -73,6 +73,9 @@ public class CommitCommand implements Command {
                             newCommit.getFilePointers().remove(fileToRm);
                         }
                     }
+                    // reset .gitlet/staging directory
+                    fileWriter.deleteDirectory(".gitlet/staging/filesToAddFolder", false);
+                    fileWriter.deleteDirectory(".gitlet/staging/filesToRmFolder", false);
                     // save new Commit object
                     fileWriter.saveCommit(newCommit);
                     // update reference in current branch to 

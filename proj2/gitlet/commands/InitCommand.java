@@ -51,6 +51,9 @@ public class InitCommand implements Command {
             // create a new HEAD reference pointing at master branch
             // save HEAD file to .gitlet/HEAD
             fileWriter.createFile(".gitlet/HEAD", "ref: .gitlet/refs/heads/master");
+            // create staging dir
+            fileWriter.createDirectory(".gitlet/staging/filesToRmFolder");
+            fileWriter.createDirectory(".gitlet/staging/filesToAddFolder");
             // save commit to the .gitlet/objects folder
             fileWriter.saveCommit(initialCommit);
             // save new staging area

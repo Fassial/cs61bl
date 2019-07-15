@@ -18,6 +18,8 @@ public interface FileOriginWriter {
     String[] getAllBranches();
     long lastModified(String name);
     void copyFile(String filePath, String destPath);
+    boolean deleteFile(String fileName);
+    boolean deleteDirectory(String dir, boolean deleteCurrDir);
     String getCurrentBranch();
     boolean filesEqual(String file1, String file2);
     String[] getAllCommitIds();
