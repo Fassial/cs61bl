@@ -196,7 +196,8 @@ public class FileSystemWriter implements FileOriginWriter {
         return head;
     }
 
-    private String getText(String fileName) {
+    @Override
+    public String getText(String fileName) {
         try {
             byte[] encoded = Files.readAllBytes(Paths.get(fileName));
             return new String(encoded, StandardCharsets.UTF_8);

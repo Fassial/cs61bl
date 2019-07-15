@@ -11,6 +11,7 @@ public interface FileOriginWriter {
     String getWorkingDirectory();
     String getCurrentBranchRef();
     String getCurrentHeadPointer();
+	String getText(String fileName);
     String getBranchHead(String branch);
     void makeBranchHead(String branch);
     Staging recoverStaging();
