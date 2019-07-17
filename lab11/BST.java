@@ -22,7 +22,7 @@ public class BST<T> {
         } else if (N == 1) {
             return new BSTNode(Q.poll());
         } else {
-            return new BSTNode(sortedQueueToTree(Q, n / 2), Q.poll(), sortedQueueToTree(Q, n - n / 2 - 1));
+            return new BSTNode(sortedQueueToTree(Q, N / 2), Q.poll(), sortedQueueToTree(Q, N - N / 2 - 1));
         }
     }
 
