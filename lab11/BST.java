@@ -15,8 +15,15 @@ public class BST<T> {
     private BSTNode<T> sortedQueueToTree(Queue<T> Q, int N) {
         // TODO: YOUR CODE HERE
         // HINT: Remember to pass the same Queue to recursive calls, to
-        //			take advantage of the fact that it is sorted.
-        return null;
+        //            take advantage of the fact that it is sorted.
+        // return null;
+        if (N == 0) {
+            return null;
+        } else if (N == 1) {
+            return new BSTNode(Q.poll());
+        } else {
+            return new BSTNode(sortedQueueToTree(Q, n / 2), Q.poll(), sortedQueueToTree(Q, n - n / 2 - 1));
+        }
     }
 
     /* Prints the tree represented by ROOT. */
@@ -42,6 +49,12 @@ public class BST<T> {
         BSTNode<T> right;
 
         BSTNode(T item) {
+            this.item = item;
+        }
+        
+        BSTNode(BSTNode left, T item, BSTNode right) {
+            this.left = left;
+            this.right = right;
             this.item = item;
         }
     }
