@@ -26,21 +26,29 @@ public class RemoteRepos {
     private HashMap<String,String> remoteRepos;
     private static final Logger fLogger = Logger.getLogger(Commit.class.getPackage().getName());
     
-    public RemoteRepos() {
+    private RemoteRepos() {
         this.configFile = ".gitlet" + File.separator + "config";
     }
     
     public static RemoteRepos getCurrentRemoteRepos() {
         RemoteRepos currentRemoteRepos = new RemoteRepos();
-        try (InputStream file = new FileInputStream(currentRemoteRepos.configFile);
-             InputStream buffer = new BufferedInputStream(file);
-             ObjectInput input = new ObjectInputStream(buffer);) {
-             currentRemoteRepos.remoteRepos = (HashMap<String,String>) input.readObject();
-        } catch (ClassNotFoundException e) {
-            fLogger.log(Level.SEVERE, "Cannot perform input. Class not found.", e);
-        } catch (IOException e) {
-            fLogger.log(Level.SEVERE, "Cannot perform input.", e);
-        }
+		if (!new File(currentRemoteRepos.configFile).exists()) {
+			currentRemoteRepos.remoteRepos = new HashMap<>();
+		} else {
+			if ("".equals(currentRemoteRepos.getText(currentRemoteRepos.configFile))) {
+				currentRemoteRepos.remoteRepos = new HashMap<>();
+			} else {
+				try (InputStream file = new FileInputStream(currentRemoteRepos.configFile);
+					 InputStream buffer = new BufferedInputStream(file);
+					 ObjectInput input = new ObjectInputStream(buffer);) {
+					 currentRemoteRepos.remoteRepos = (HashMap<String,String>) input.readObject();
+				} catch (ClassNotFoundException e) {
+					fLogger.log(Level.SEVERE, "Cannot perform input. Class not found.", e);
+				} catch (IOException e) {
+					fLogger.log(Level.SEVERE, "Cannot perform input.", e);
+				}
+			}
+		}
         return currentRemoteRepos;
     }
     
@@ -118,6 +126,9 @@ public class RemoteRepos {
         } else {
             String remoteRepoName = this.remoteRepos.get(remoteName);
             String path = remoteRepoName + File.separator + "refs" + File.separator + "heads" + File.separator + branch;
+			if (!new File(path).exists()) {
+				return null;
+			}
             String head = getText(path);
             return head;
         }
@@ -180,6 +191,7 @@ public class RemoteRepos {
     public Commit recoverCommit(String remoteRepoName, String id) {
         String objDir = remoteRepoName + File.separator + "objects" + File.separator + id;
         File d = new File(objDir);
+		System.out.println(objDir);
         if (!d.exists()) {
             throw new IllegalArgumentException("commit not found!");
             // return null;
@@ -249,15 +261,22 @@ public class RemoteRepos {
         }
         if (source.isDirectory()) {
             String[] sourceFiles = source.list();
+			if (!dest.exists()) {
+                dest.mkdirs();
+            }
             for (String sourceFile : sourceFiles) {
+				// System.out.println(destPath + File.separator + sourceFile);
                 copyDirectory(dirPath + File.separator + sourceFile, destPath + File.separator + sourceFile);
             }
         } else if (source.isFile()) {
+			/*
             try {
                 Files.copy(source.toPath(), dest.toPath(), StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+			*/
+			copyFile(dirPath, destPath);
         }
     }
     
@@ -357,18 +376,28 @@ public class RemoteRepos {
             String remoteRepoName = this.remoteRepos.get(remoteName);
             Commit headCommit = recoverCommit(remoteRepoName, remoteBranchHead);
             Commit currentCommit = headCommit;
-            String destBranchRefDirectory = ".gitlet" + File.separator + "refs" + File.separator + "remotes" + File.separator + remoteName;
+            String destBranchRefDirectory = ".gitlet" + File.separator + "refs" + File.separator + "heads" + File.separator + remoteName;
+			String destRemoteBranchRefDirectory = ".gitlet" + File.separator + "refs" + File.separator + "remotes" + File.separator + remoteName;
 			String destRootDirectory = ".gitlet" + File.separator + "objects";
-            if (new File(destRootDirectory).exists()) {
+            /*
+			if (new File(destRootDirectory).exists()) {
                 deleteDirectory(destRootDirectory, false);
             }
+			*/
             while (currentCommit != null) {
                 String sourceDirectory =  remoteRepoName + File.separator + "objects" + File.separator + currentCommit.getId();
                 String destDirectory =  destRootDirectory + File.separator + currentCommit.getId();
                 copyDirectory(sourceDirectory, destDirectory);
                 currentCommit = currentCommit.getParent();
             }
-            writeFile(destRootDirectory + File.separator + branch, headCommit.getId());
+			if (!(new File(destRemoteBranchRefDirectory).exists())) {
+				new File(destRemoteBranchRefDirectory).mkdirs();
+			}
+			if (!(new File(destBranchRefDirectory).exists())) {
+				new File(destBranchRefDirectory).mkdirs();
+			}
+            writeFile(destRemoteBranchRefDirectory + File.separator + branch, headCommit.getId());
+			writeFile(destBranchRefDirectory + File.separator + branch, headCommit.getId());
 			String FETCH_HEAD_Path = ".gitlet" + File.separator + "FETCH_HEAD";
 			String FETCH_HEAD_Text = headCommit.getId() + "," + branch + "," + remoteName + "," + remoteRepoName;
 			writeFile(FETCH_HEAD_Path, FETCH_HEAD_Text);

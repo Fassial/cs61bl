@@ -33,7 +33,7 @@ public class BranchCommand implements Command {
             if (fileWriter.exists(".gitlet/refs/heads/" + branchName)) {
                 // check if branch already exists, if it does, 
                 // output error message and return false
-                System.our.println(this.stdOutBranchExists);
+                System.out.println(this.stdOutBranchExists);
                 return false;
             } else {
                 // get current commit id

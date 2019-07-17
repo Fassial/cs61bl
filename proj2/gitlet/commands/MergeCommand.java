@@ -1,8 +1,7 @@
 package gitlet.commands;
 
-import gitlet.Commit;
-import gitlet.FileWriterFactory;
-import gitlet.FileOriginWriter;
+import gitlet.*;
+import gitlet.commands.tools.CommitTool;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,40 +51,56 @@ public class MergeCommand implements Command {
                     System.out.println(this.stdOutBranchNotExists);
                     return false;
                 } else {
+					// System.out.println("Branch exists!");
                     String currentBranch = fileWriter.getCurrentBranch();
                     if (branch.equals(currentBranch)) {
                         // if branch is the current branch, print message and fail;
                         System.out.println(this.stdOutIsCurrentBranch);
                         return false;
                     } else {
+						// System.out.println("Diff branches!");
                         // get the current commit, the other branch commit, and the splitpoint
                         Commit current = fileWriter.recoverCommit(fileWriter.getCurrentHeadPointer());
                         Commit other = fileWriter.recoverCommit(fileWriter.getBranchHead(branch));
-                        Commit split = fileWriter.recoverCommit(current.findSplitPoint(other));
+						System.out.println(other.getId());
+                        Commit split;
+						if (current.findSplitPoint(other) == null) {
+                            // pull
+                            split = current;
+                            while (split.getParent() != null) {
+                                split = split.getParent();
+                            }
+                        } else {
+							split = fileWriter.recoverCommit(current.findSplitPoint(other));
+						}
                         if (split.equals(other)) {
+							// System.out.println("split equals other!");
                             // If the split point is the same commit as the given branch, then we do nothing
                             System.out.println("Given branch is an ancestor of the current branch.");
+                            new CommitTool("Merged " + currentBranch + " with " + branch + ".").execute();
                             return true;
                         } else if (split.equals(current)) {
+							// System.out.println("split equals current!");
                             // If the split point is the current branch, then the current branch is set to the same commit as the given branch
                             if (new CheckoutBranchCommand(branch).execute()) {
                                 // successfully execute
                                 System.out.println("Current branch fast-forwarded.");
+                                new CommitTool("Merged " + currentBranch + " with " + branch + ".").execute();
                                 return true;
                             } else {
                                 // inner error.
                                 return false;
                             }
                         } else {
-                            List<String> currentModOnly = new ArrayList<String>();
-                            List<String> otherModOnly = new ArrayList<String>();
-                            List<String> currentAdd = new ArrayList<String>();
-                            List<String> otherAdd = new ArrayList<String>();
-                            List<String> currentAddOnly = new ArrayList<String>();
-                            List<String> otherAddOnly = new ArrayList<String>();
-                            List<String> currentSub = new ArrayList<String>();
-                            List<String> otherSub = new ArrayList<String>();
-                            List<String> conflictFiles = new ArrayList<String>();
+                            List<String> currentModOnly = new ArrayList<>();
+                            List<String> otherModOnly = new ArrayList<>();
+                            List<String> currentAdd = new ArrayList<>();
+                            List<String> otherAdd = new ArrayList<>();
+                            List<String> currentAddOnly = new ArrayList<>();
+                            List<String> otherAddOnly = new ArrayList<>();
+                            List<String> currentSub = new ArrayList<>();
+                            List<String> otherSub = new ArrayList<>();
+                            List<String> conflictFiles = new ArrayList<>();
                             HashMap<String, String> currentFP = current.getFilePointers();
                             HashMap<String, String> otherFP = other.getFilePointers();
                             HashMap<String, String> splitFP = split.getFilePointers();
@@ -144,61 +159,90 @@ public class MergeCommand implements Command {
                             }
                             if ((currentFP != null) && (currentFP.keySet().size() > 0)) {
                                 for (String file : currentFP.keySet()) {
-                                    if (!splitFP.containsKey(file)) {
-                                        currentAdd.add(file);
-                                    }
+									if (splitFP != null) {
+										if (!splitFP.containsKey(file)) {
+											currentAdd.add(file);
+										}
+									}
                                 }
                             }
                             if ((otherFP != null) && (otherFP.keySet().size() > 0)) {
                                 for (String file : otherFP.keySet()) {
-                                    if (!splitFP.containsKey(file)) {
-                                        otherAdd.add(file);
-                                    }
+									if (splitFP != null) {
+										if (!splitFP.containsKey(file)) {
+											otherAdd.add(file);
+										}
+									}
                                 }
                             }
-                            if ((currentAdd != null) && (currentAdd.keySet().size() > 0)) {
+                            if ((currentAdd != null) && (currentAdd.size() > 0)) {
                                 for (String file : currentAdd) {
-                                    if (otherAdd.contains(file) {
-                                        // Any files modified in different ways in the current and given branches are in conflict. 
-                                        // the file was absent at the split point and have different contents in the given and current branches
-                                        conflictFiles.add(file);
-                                    } else {
-                                        // Any files that were not present at the split point and are present
-                                        // only in the current branch should remain as they are.
-                                        currentAddOnly.add(file);
-                                    }
+									if (otherAdd != null) {
+										if (otherAdd.contains(file)) {
+											// Any files modified in different ways in the current and given branches are in conflict. 
+											// the file was absent at the split point and have different contents in the given and current branches
+											conflictFiles.add(file);
+										} else {
+											// Any files that were not present at the split point and are present
+											// only in the current branch should remain as they are.
+											currentAddOnly.add(file);
+										}
+									}
                                 }
                             }
-                            if ((otherAdd != null) && (otherAdd.keySet().size() > 0)) {
+                            if ((otherAdd != null) && (otherAdd.size() > 0)) {
                                 for (String file : otherAdd) {
-                                    if (!currentAdd.contains(file)) {
-                                        // Any files that were not present at the split point and are present
-                                        // only in the current branch should remain as they are.
-                                        otherAddOnly.add(file);
-                                    }
+									if (currentAdd != null) {
+										if (!currentAdd.contains(file)) {
+											// Any files that were not present at the split point and are present
+											// only in the current branch should remain as they are.
+											otherAddOnly.add(file);
+										}
+									}
                                 }
                             }
                             
                             List<String> fileList = new ArrayList<>();
                             FileSystemWriter.getFiles(fileWriter.getWorkingDirectory(), "", fileList);
+							List<String> untrackedFiles = new ArrayList<>();
+							while (fileList.size() != 0) {
+								String fileName = fileList.remove(0);
+								// modify untrackedFiles
+								if (current.getFilePointers() != null) {
+									if (!current.getFilePointers().containsKey(fileName)) {
+										if (staging.getFilesToRm().size() > 0){
+											if (!staging.getFilesToRm().contains(fileName)) {
+												untrackedFiles.add(fileName);
+											}
+										} else {
+											untrackedFiles.add(fileName);
+										}
+									}
+								} else {
+									untrackedFiles.add(fileName);
+								}
+							}
                             boolean untrackedFilesOw = false;
-                            if ((otherAddOnly != null) && (otherAddOnly.keySet().size() > 0)) {
+                            if ((otherAddOnly != null) && (otherAddOnly.size() > 0)) {
                                 for (String file : otherAddOnly) {
-                                    if (fileList.contains(file)) {
+									if (untrackedFiles.contains(file)) {
                                         untrackedFilesOw = true;
+										System.out.println("otherAddOnly: " + file);
                                         break;
                                     }
                                 }
                             }
-                            if ((conflictFiles != null) && (conflictFiles.keySet().size() > 0)) {
+                            if ((conflictFiles != null) && (conflictFiles.size() > 0)) {
                                 for (String file : conflictFiles) {
-                                    if (fileList.contains(file)) {
+                                    if (untrackedFiles.contains(file)) {
                                         untrackedFilesOw = true;
+										System.out.println("conflictFiles: " + file);
                                         break;
                                     }
                                 }
                             }
                             if (untrackedFilesOw) {
+								// System.out.println("I'am here;");
                                 System.out.println(this.stdOutUntrackedOw);
                                 return false;
                             } else {
@@ -210,7 +254,7 @@ public class MergeCommand implements Command {
                                  * at the front of the given branch). These files should 
                                  * then all be automatically staged.
                                  **/
-                                if ((otherModOnly != null) && (otherModOnly.keySet().size() > 0)) {
+                                if ((otherModOnly != null) && (otherModOnly.size() > 0)) {
                                     for (String file : otherModOnly) {
                                         String commitId = otherFP.get(file);
                                         // appear in add (modified), need commit later
@@ -226,7 +270,7 @@ public class MergeCommand implements Command {
                                  * are present only in the given branch should be checked 
                                  * out and staged.
                                  **/
-                                if ((otherAddOnly != null) && (otherAddOnly.keySet().size() > 0)) {
+                                if ((otherAddOnly != null) && (otherAddOnly.size() > 0)) {
                                     for (String file : otherAddOnly) {
                                         String commitId = otherFP.get(file);
                                         // appear in add, need commit later
@@ -242,18 +286,18 @@ public class MergeCommand implements Command {
                                  * current branch, and absent in the given branch should 
                                  * be removed (and untracked).
                                  **/
-                                if ((otherSub != null) && (otherSub.keySet().size() > 0)) {
+                                if ((otherSub != null) && (otherSub.size() > 0)) {
                                     for (String file : otherSub) {
                                         // appear in 
                                         // new RmCommand(file).execute();
                                         staging.getFilesToRm().add(file);
-                                        fileWriter.copyFile(file ".gitlet/staging/filesToRmFolder/" + file);
+                                        fileWriter.copyFile(file, ".gitlet/staging/filesToRmFolder/" + file);
                                     }
                                 }
                                 
                                 /**  conflictFiles
                                  * Any files modified in different ways in the current and 
-                                 * given branches are in conflict. “Modified in different ways” 
+                                 * given branches are in conflict. "Modified in different ways"
                                  * can mean that the contents of both are changed and different 
                                  * from other, or the contents of one are changed and the other 
                                  * is deleted, or the file was absent at the split point and 
@@ -262,7 +306,7 @@ public class MergeCommand implements Command {
                                  * with the following, but do not stage the result.
                                  **/
                                 boolean resultInConflict = false;
-                                if ((conflictFiles != null) && (conflictFiles.keySet().size() > 0)) {
+                                if ((conflictFiles != null) && (conflictFiles.size() > 0)) {
                                     resultInConflict = true;
                                     for (String file : conflictFiles) {
                                         if (currentFP.containsKey(file) && otherFP.containsKey(file)) {
@@ -319,9 +363,9 @@ public class MergeCommand implements Command {
                                 
                                 // Commit
                                 if (resultInConflict) {
-                                    new CommitCommand("Encountered a merge conflict.").execute();
+                                    new CommitTool("Encountered a merge conflict.").execute();
                                 } else {
-                                    new CommitCommand("Merged " + currentBranch + " with " + branch + ".").execute();
+                                    new CommitTool("Merged " + currentBranch + " with " + branch + ".").execute();
                                 }
                                 for (String file : otherSub) {
                                     fileWriter.deleteFile(file);

@@ -5,7 +5,6 @@ import gitlet.commands.Command;
 import gitlet.commands.factories.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 /* Driver class for Gitlet, the tiny stupid version-control system.
    @author
@@ -15,7 +14,7 @@ public class Main {
     /* Usage: java gitlet.Main ARGS, where ARGS contains
        <COMMAND> <OPERAND> .... */
     private static List<CommandFactory> getAvailableCommands() {
-        List<CommandFactory> commands = new ArrayList<CommandFactory>();
+        List<CommandFactory> commands = new ArrayList<>();
         // add available commands into the List
         commands.add(new InitCommandFactory());
         commands.add(new AddCommandFactory());
@@ -25,19 +24,23 @@ public class Main {
         commands.add(new GlobalLogCommandFactory());
         commands.add(new FindCommandFactory());
         commands.add(new StatusCommandFactory());
-        /*commands.add(new BranchCommandFactory());
+        commands.add(new BranchCommandFactory());
         commands.add(new CheckoutCommandFactory());
         commands.add(new RmBranchCommandFactory());
         commands.add(new ResetCommandFactory());
         commands.add(new MergeCommandFactory());
-        commands.add(new RebaseCommandFactory());
+        commands.add(new AddRemoteCommandFactory());
+        commands.add(new RmRemoteCommandFactory());
+        commands.add(new PushCommandFactory());
+        commands.add(new FetchCommandFactory());
+        commands.add(new PullCommandFactory());
+        /*commands.add(new RebaseCommandFactory());
         commands.add(new InteractiveRebaseCommandFactory());*/
         
         return commands;
     }
     
     public static void main(String... args) {
-        // TODO: YOUR CODE HERE
         if (args.length == 0) {
             System.out.println("Please enter a command.");
             return;

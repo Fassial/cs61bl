@@ -101,9 +101,19 @@ public class StatusCommand implements Command {
             for (String fileName : trackedAddNRmFiles) {
                 if (!fileList.contains(fileName)) {
                     System.out.println(fileName + " (deleted)");
-                } else if (!fileWriter.filesEqual(fileName, ".gitlet/staging/filesToAddFolder/" + fileName)) {
-                    System.out.println(fileName + " (modified)");
-                }
+                } else if (staging.getFilesToAdd().size() > 0) {
+					if (staging.getFilesToAdd().contains(fileName)) {
+						if (!fileWriter.filesEqual(fileName, ".gitlet/staging/filesToAddFolder/" + fileName)) {
+							System.out.println(fileName + " (modified)");
+						}
+					}
+                } else if (currentHead.getFilePointers() != null) {
+					if (currentHead.getFilePointers().containsKey(fileName)) {
+						if (!fileWriter.filesEqual(fileName, ".gitlet/objects/" + currentHead.getFilePointers().get(fileName) + "/" + fileName)) {
+							System.out.println(fileName + " (modified)");
+						}
+					}
+				}
             }
             System.out.println();
             

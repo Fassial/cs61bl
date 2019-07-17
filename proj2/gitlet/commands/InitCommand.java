@@ -48,16 +48,18 @@ public class InitCommand implements Command {
             // create the master branch pointing at initial commit
             // save master branch in .gitlet/refs/heads folder
             fileWriter.createFile(".gitlet/refs/heads/master", initialCommit.getId());
+			// config for remote
+			fileWriter.createFile(".gitlet/config", "");
             // create a new HEAD reference pointing at master branch
             // save HEAD file to .gitlet/HEAD
             fileWriter.createFile(".gitlet/HEAD", "ref: .gitlet/refs/heads/master");
+			// save new staging area
+            fileWriter.saveStaging(new Staging());
             // create staging dir
             fileWriter.createDirectory(".gitlet/staging/filesToRmFolder");
             fileWriter.createDirectory(".gitlet/staging/filesToAddFolder");
             // save commit to the .gitlet/objects folder
             fileWriter.saveCommit(initialCommit);
-            // save new staging area
-            fileWriter.saveStaging(new Staging());
             return true;
         }
     }

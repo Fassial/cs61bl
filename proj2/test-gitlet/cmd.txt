@@ -3,17 +3,108 @@ rm -rf gitlet
 cd ..
 rm gitlet/*.class
 rm gitlet/commands/*.class
+rm gitlet/commands/tools/*.class
 rm gitlet/commands/factories/*.class
 javac gitlet/*.java
 mkdir test-gitlet/gitlet
 mkdir test-gitlet/gitlet/commands
 mkdir test-gitlet/gitlet/commands/factories
+mkdir test-gitlet/gitlet/commands/tools
 cp gitlet/*.class test-gitlet/gitlet
 cp gitlet/commands/*.class test-gitlet/gitlet/commands
 cp gitlet/commands/factories/*.class test-gitlet/gitlet/commands/factories
+cp gitlet/commands/tools/*.class test-gitlet/gitlet/commands/tools
 cd test-gitlet
 java gitlet.Main init
 java gitlet.Main add 1.txt
+java gitlet.Main status
+java gitlet.Main commit "add 1.txt"
+java gitlet.Main status
+>>>modify 1.txt
+java gitlet.Main checkout -- 1.txt
+>>>modify 1.txt
+java gitlet.Main status
+java gitlet.Main commit "modify 1.txt 2"
+>>>modify 1.txt
+java gitlet.Main status
+java gitlet.Main commit "modify 1.txt 3"
+java gitlet.Main checkout 31f337dc6e048e355fe6edcb5eca7ca520e50990 -- 1.txt
+java gitlet.Main branch master
+java gitlet.Main branch test
+java gitlet.Main checkout branch
+java gitlet.Main checkout test
+>>>modify 1.txt
+java gitlet.Main add 1.txt
+java gitlet.Main status
+java gitlet.Main commit "modify 1.txt 4"
+java gitlet.Main status
+java gitlet.Main checkout master
+java gitlet.Main rm-branch master
+java gitlet.Main rm-branch test
+java gitlet.Main checkout test
+java gitlet.Main log
+java gitlet.Main global-log
+>>>modify 2.txt
+java gitlet.Main add 2.txt
+java gitlet.Main status
+java gitlet.Main commit "add 2.txt"
+java gitlet.Main status
+java gitlet.Main rm 2.txt
+java gitlet.Main status
+java gitlet.Main commit "rm 2.txt"
+java gitlet.Main status
+java gitlet.Main log
+java gitlet.Main reset e0dbcd3b6cec02b337d9ff7108b3f7597f29f8a1
+java gitlet.Main add 2.txt
+java gitlet.Main status
+java gitlet.Main reset e0dbcd3b6cec02b337d9ff7108b3f7597f29f8a1
+java gitlet.Main commit "add 2.txt again"
+java gitlet.Main status
+java gitlet.Main reset e0dbcd3b6cec02b337d9ff7108b3f7597f29f8a1
+java gitlet.Main branch test
+java gitlet.Main checkout test
+>>>modify 2.txt
+java gitlet.Main add 2.txt
+java gitlet.Main status
+java gitlet.Main commit "modify 2.txt 2"
+java gitlet.Main status
+java gitlet.Main checkout master
+java gitlet.Main merge test
+java gitlet.Main log
+java gitlet.Main add 2.txt
+java gitlet.Main status
+java gitlet.Main commit "add 2.txt 3"
+java gitlet.Main status
+java gitlet.Main add-remote test C:\\Users\\Think\\Desktop\\test\\.gitlet
+java gitlet.Main rm-remote test
+java gitlet.Main add-remote test C:\\Users\\Think\\Desktop\\test\\.gitlet
+java gitlet.Main add-remote test C:\\Users\\Think\\Desktop\\test\\test\\.gitlet
+java gitlet.Main rm-remote test\\test
+java gitlet.Main push test branch
+java gitlet.Main push test master
+java gitlet.Main log
+>>>copy .gitlet/objects/(Init commit),  .gitlet/refs/heads/master, and blob
+java gitlet.Main push test master
+java gitlet.Main fetch test master
+<<<
+java gitlet.Main pull test master
+java gitlet.Main log
+java gitlet.Main rm 1.txt
+java gitlet.Main status
+java gitlet.Main commit "remove 1.txt"
+java gitlet.Main status
+>>>delete 1.txt
+>>>modify 2.txt
+java gitlet.Main add 2.txt
+java gitlet.Main status
+java gitlet.Main commit "modify 2.txt 4"
+java gitlet.Main status
+java gitlet.Main log
+java gitlet.Main pull test master
+java gitlet.Main global-log
+
+
+
 java gitlet.Main status
 >>>modify 1.txt
 java gitlet.Main status

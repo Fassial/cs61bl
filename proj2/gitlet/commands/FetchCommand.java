@@ -1,9 +1,10 @@
 package gitlet.commands;
 
 import gitlet.RemoteRepos;
-import gitlet.Commit;
 import gitlet.FileWriterFactory;
 import gitlet.FileOriginWriter;
+
+import java.io.File;
 import java.util.Arrays;
 
 public class FetchCommand implements Command {
@@ -37,19 +38,19 @@ public class FetchCommand implements Command {
             System.out.println("Not in an initialized gitlet directory.");
             return false;
         } else {
-            RemoteRepos currentRemoteRepos = getCurrentRemoteRepos();
+            RemoteRepos currentRemoteRepos = RemoteRepos.getCurrentRemoteRepos();
             String remoteRepoName = currentRemoteRepos.getRemoteRepos().get(remoteName);
             if (!(new File(remoteRepoName).exists())) {
                 System.out.println(this.stdOutRemoteDirNotExists);
                 return false;
             } else {
-                String[] remoteRepoBranches = getAllRemoteRepoBranches(this.remoteName);
+                String[] remoteRepoBranches = currentRemoteRepos.getAllRemoteRepoBranches(this.remoteName);
                 if (remoteRepoBranches == null) {
                     // should not come here
                     System.out.println(this.stdOutRemoteNotHaveBranch);
                     return false;
                 }
-                if (Arryas.binarySearch(remoteRepoBranches, branch) < 0) {
+                if (Arrays.binarySearch(remoteRepoBranches, branch) < 0) {
                     // the remote gitlet does not have the given branch name,
                     System.out.println(this.stdOutRemoteNotHaveBranch);
                     return false;

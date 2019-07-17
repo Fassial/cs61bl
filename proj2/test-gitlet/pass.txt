@@ -1,0 +1,15 @@
+init
+add
+commit
+status
+log
+global-log
+find
+branch
+checkout
+rm-branch
+reset
+merge
+add-remote
+rm-remote
+push

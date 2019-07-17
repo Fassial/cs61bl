@@ -41,14 +41,27 @@ public class CommitCommand implements Command {
                 Commit currentHead = fileWriter.recoverCommit(currentCommitId);
                 // get Staging 
                 Staging staging = fileWriter.recoverStaging();
+				boolean trackedFileChanged = false;
+				if (currentHead.getFilePointers() != null && currentHead.getFilePointers().size() > 0) {
+					HashMap<String,String> fp = currentHead.getFilePointers();
+					for (String file : fp.keySet()) {
+						String fileLastCommitId = fp.get(file);
+						String objectsPath = ".gitlet/objects/" + fileLastCommitId;
+						String fileLastCommitPath = objectsPath + "/" + file;
+						if (!this.fileWriter.filesEqual(file, fileLastCommitPath)) {
+							trackedFileChanged = true;
+							break;
+						}
+					}
+				}
                 //    if stagins is empty, print error message and return false
-                if (staging.getFilesToRm().size() == 0 && staging.getFilesToAdd().size() == 0 ){
+                if (staging.getFilesToRm().size() == 0 && staging.getFilesToAdd().size() == 0 && !trackedFileChanged){
                     System.out.println("No changes added to the commit.");
                     return false;
                 } else {
                     // get current filePointers
                     HashMap<String, String> filePointers = currentHead.getFilePointers() == null ? 
-                                    new HashMap<String, String>() : currentHead.getFilePointers();
+                                    new HashMap<>() : currentHead.getFilePointers();
                     // create new commit with parent filePointers and 
                     // current systime for timestamp
                     Commit newCommit = new Commit(currentHead, System.currentTimeMillis(), message, filePointers);
@@ -56,6 +69,19 @@ public class CommitCommand implements Command {
                     // create commit folder
                     String objectsFolder = ".gitlet/objects/" + id;
                     fileWriter.createDirectory(objectsFolder);
+					if (trackedFileChanged) {
+						for (String file : filePointers.keySet()) {
+							String fileLastCommitId = filePointers.get(file);
+							String objectsPath = ".gitlet/objects/" + fileLastCommitId;
+							String fileLastCommitPath = objectsPath + "/" + file;
+							if (this.fileWriter.filesEqual(file, fileLastCommitPath)) {
+								continue;
+							} else {
+								fileWriter.copyFile(file, objectsFolder + "/" + file);
+								newCommit.getFilePointers().put(file, id);
+							}
+						}
+					}
                     // add or update the filePointers from 
                     // staging.filesToAdd
                     // and make a copy of files to commit folder
@@ -90,7 +116,7 @@ public class CommitCommand implements Command {
     }
     
     public FileOriginWriter getFileWriter() {
-        return fileWriter;
+        return this.fileWriter;
     }
 
     public void setFileWriter(FileOriginWriter fileWriter) {

@@ -1,9 +1,10 @@
 package gitlet.commands;
 
-import gitlet.Commit;
-import gitlet.FileWriterFactory;
-import gitlet.FileOriginWriter;
+import gitlet.*;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class CheckoutBranchCommand implements Command {
     private String branch;
@@ -53,9 +54,11 @@ public class CheckoutBranchCommand implements Command {
                 
                 // recover current commit
                 String currentCommitId = fileWriter.getCurrentHeadPointer();
+				// System.out.println(currentCommitId);
                 Commit currentHead = fileWriter.recoverCommit(currentCommitId);
                 List<String> fileList = new ArrayList<>();
                 FileSystemWriter.getFiles(fileWriter.getWorkingDirectory(), "", fileList);
+				Staging staging = fileWriter.recoverStaging();
                 List<String> untrackedFiles = new ArrayList<>();
                 while (fileList.size() != 0) {
                     String fileName = fileList.remove(0);
@@ -75,11 +78,12 @@ public class CheckoutBranchCommand implements Command {
                     }
                 }
                 boolean untrackedFilesOw = false;
-                if (fp.size() > 0 && fp != null) {
+                if (fp != null && fp.size() > 0) {
                     while (untrackedFiles.size() != 0) {
                         String fileName = untrackedFiles.remove(0);
                         if (fp.containsKey(fileName)) {
                             untrackedFilesOw = true;
+							// System.out.println("untrackedFile: " + fileName);
                             break;
                         }
                     }
@@ -88,7 +92,7 @@ public class CheckoutBranchCommand implements Command {
                     System.out.println(this.stdOutUntrackedOw);
                     return false;
                 } else {
-                    if (fp.size() > 0 && fp != null) {
+                    if (fp != null && fp.size() > 0) {
                         for(String filePath : fp.keySet()){
                             String fileCommitId = fp.get(filePath);
                             new CheckoutFileCommand(fileCommitId, filePath).execute();

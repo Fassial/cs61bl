@@ -1,7 +1,6 @@
 package gitlet.commands;
 
 import gitlet.RemoteRepos;
-import gitlet.Commit;
 import gitlet.FileWriterFactory;
 import gitlet.FileOriginWriter;
 
@@ -32,7 +31,7 @@ public class RmRemoteCommand implements Command {
             System.out.println("Not in an initialized gitlet directory.");
             return false;
         } else {
-            RemoteRepos currentRemoteRepos = getCurrentRemoteRepos();
+            RemoteRepos currentRemoteRepos = RemoteRepos.getCurrentRemoteRepos();
             if (!currentRemoteRepos.inRemoteRepos(this.remoteName)) {
                 System.out.println(this.stdOutRemoteNotExists);
                 return false;

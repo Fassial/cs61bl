@@ -1,16 +1,17 @@
 package gitlet.commands;
 
-import gitlet.Commit;
-import gitlet.FileWriterFactory;
-import gitlet.FileOriginWriter;
+import gitlet.*;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ResetCommand implements Command {
     private String id;
     private FileOriginWriter fileWriter;
     private String stdOutCommitNotExists;
     private String stdOutUntrackedOw;
-    
+
     public ResetCommand(String id) {
         this.id = id;
         this.fileWriter = FileWriterFactory.getWriter();
@@ -22,12 +23,12 @@ public class ResetCommand implements Command {
     public boolean isDangerous() {
         return true;
     }
-    
+
     @Override
     public boolean needInitDir() {
         return true;
     }
-    
+
     @Override
     public boolean execute() {
         if (this.needInitDir() != fileWriter.exists(".gitlet")) {
@@ -36,19 +37,20 @@ public class ResetCommand implements Command {
         } else {
             try {
                 Commit commit = fileWriter.recoverCommit(id);
-                HashMap<String, String> fp = commit.getFilePointers();
+                HashMap<String,String> fp = commit.getFilePointers();
                 // recover current commit
                 String currentCommitId = fileWriter.getCurrentHeadPointer();
                 Commit currentHead = fileWriter.recoverCommit(currentCommitId);
                 List<String> fileList = new ArrayList<>();
                 FileSystemWriter.getFiles(fileWriter.getWorkingDirectory(), "", fileList);
+                Staging staging = fileWriter.recoverStaging();
                 List<String> untrackedFiles = new ArrayList<>();
                 while (fileList.size() != 0) {
                     String fileName = fileList.remove(0);
                     // modify untrackedFiles
                     if (currentHead.getFilePointers() != null) {
                         if (!currentHead.getFilePointers().containsKey(fileName)) {
-                            if (staging.getFilesToRm().size() > 0){
+                            if (staging.getFilesToRm().size() > 0) {
                                 if (!staging.getFilesToRm().contains(fileName)) {
                                     untrackedFiles.add(fileName);
                                 }
@@ -61,7 +63,7 @@ public class ResetCommand implements Command {
                     }
                 }
                 boolean untrackedFilesOw = false;
-                if (fp.size() > 0 && fp != null) {
+                if (fp != null && fp.size() > 0) {
                     while (untrackedFiles.size() != 0) {
                         String fileName = untrackedFiles.remove(0);
                         if (fp.containsKey(fileName)) {
@@ -96,3 +98,5 @@ public class ResetCommand implements Command {
                 return false;
             }
         }
+    }
+}

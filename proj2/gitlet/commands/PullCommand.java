@@ -1,20 +1,20 @@
 package gitlet.commands;
 
-import gitlet.RemoteRepos;
-import gitlet.Commit;
 import gitlet.FileWriterFactory;
 import gitlet.FileOriginWriter;
+
+import java.io.File;
 
 public class PullCommand implements Command {
     private String remoteName;
     private String branch;
     private FileOriginWriter fileWriter;
-	
-	public PullCommand(String remoteName, String branch) {
+    
+    public PullCommand(String remoteName, String branch) {
         this.remoteName = remoteName;
         this.branch = branch;
         this.fileWriter = FileWriterFactory.getWriter();
-	}
+    }
     
     @Override
     public boolean isDangerous() {
@@ -33,6 +33,13 @@ public class PullCommand implements Command {
             return false;
         } else {
             if (!new FetchCommand(this.remoteName, this.branch).execute()) {
-				return false;
-			} else {
-				
+                return false;
+            } else {
+                // String branchRefDirectory = ".gitlet" + File.separator + "refs" + File.separator + "remotes" 
+                //                             + File.separator + this.remoteName + File.separator + this.branch;
+                // get the current commit, the other branch commit, and the splitpoint
+                return new MergeCommand(this.remoteName + File.separator + this.branch).execute();
+            }
+        }
+    }
+}

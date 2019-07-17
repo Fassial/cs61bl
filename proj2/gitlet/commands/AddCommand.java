@@ -3,7 +3,6 @@ package gitlet.commands;
 import gitlet.FileWriterFactory;
 import gitlet.FileOriginWriter;
 import gitlet.Staging;
-import java.io.File;
 
 public class AddCommand implements Command {
     private FileOriginWriter fileWriter;
