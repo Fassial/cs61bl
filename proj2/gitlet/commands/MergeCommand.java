@@ -163,6 +163,8 @@ public class MergeCommand implements Command {
 										if (!splitFP.containsKey(file)) {
 											currentAdd.add(file);
 										}
+									} else {
+										currentAdd.add(file);
 									}
                                 }
                             }
@@ -172,6 +174,8 @@ public class MergeCommand implements Command {
 										if (!splitFP.containsKey(file)) {
 											otherAdd.add(file);
 										}
+									} else {
+										otherAdd.add(file);
 									}
                                 }
                             }
