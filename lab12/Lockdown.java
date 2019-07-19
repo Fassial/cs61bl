@@ -122,10 +122,10 @@ public class Lockdown implements Iterable<String[]> {
 
      @Override
     public Iterator<String[]> iterator() {
-        if (true) { // FIXME
+        if (xTurn) { // FIXME
             return new MoveIterator(xPos);
         }
-        return new MoveIterator(xPos); // FIXME
+        return new MoveIterator(oPos); // FIXME
     }
 
     /* A private Iterator class which iterates through the moves
@@ -146,21 +146,60 @@ public class Lockdown implements Iterable<String[]> {
          */
         MoveIterator(int[] from) {
             // FIXME
+			this.from = from;
         }
 
         @Override
         public boolean hasNext() {
-            return true;  // FIXME
+            // return true;  // FIXME
+			int moveDirCopy = moveDir;
+			int blockDirCopy = blockDir + 1;
+			while (moveDirCopy < 8) {
+				while (blockDirCopy < 8) {
+					if (moveAvailable(from, getDirection(from, moveDirCopy), from) && 
+						moveAvailable(getDirection(from, moveDirCopy), getDirection(getDirection(from, moveDirCopy), blockDirCopy), from)) {
+						// System.out.println(moveDirCopy + " " + blockDirCopy);
+						return true;
+					}
+					blockDirCopy += 1;
+				}
+				blockDirCopy = 0;
+				moveDirCopy += 1;
+			}
+			return false;
         }
 
         /* A helper method to calculate the next valid position. */
         private void nextPos() {
             // FIXME
+			blockDir += 1;
+			while (moveDir < 8) {
+				while (blockDir < 8) {
+					if (moveAvailable(from, getDirection(from, moveDir), from) && 
+						moveAvailable(getDirection(from, moveDir), getDirection(getDirection(from, moveDir), blockDir), from)) {
+						return;
+					}
+					blockDir += 1;
+				}
+				blockDir = 0;
+				moveDir += 1;
+			}
+			// System.out.println("Here!");
         }
 
         @Override
         public String[] next() {
-            return null;  // FIXME
+            // return null;  // FIXME
+			if (hasNext()) {
+				nextPos();
+				String[] next = new String[2];
+				// System.out.println(moveDir + " " + blockDir);
+				next[0] = getPosition(getDirection(from, moveDir));
+				next[1] = getPosition(getDirection(getDirection(from, moveDir), blockDir));
+				return next;
+			} else {
+				return null;
+			}
         }
     }
     
