@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 /**
  * Array-based list which only uses even indices, since the other are
  * rather odd. Invariants:
@@ -6,7 +8,7 @@
  *   getLast: The item we want to return is in position size - 2
  *   size: The number of items in the list should be size/2.
  */
-public class SpaceList<Item> {
+public class SpaceList<Item> implements Iterable<Item> {
     private Item[] items;
     private int size;
 
@@ -14,6 +16,25 @@ public class SpaceList<Item> {
     public SpaceList() {
         items = (Item[]) new Object[16];
         size = 0;
+    }
+	
+	public Iterator<Item> iterator() {
+        return new SLListIterator();
+    }
+	
+	private class SLListIterator implements Iterator<Item> {
+
+        private int bookmark = 0;
+
+        public Item next() {
+            Item toReturn = items[bookmark];
+            bookmark += 2;
+            return toReturn;
+        }
+
+        public boolean hasNext() {
+            return bookmark != size;
+        }
     }
 
     /** Resizes the underlying array to the target capacity. */

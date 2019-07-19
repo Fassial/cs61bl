@@ -11,6 +11,7 @@ public class SpaceListTest {
         a.addLast(3);
         int count = 0;
         for (Integer i : a) {
+            // System.out.println(i);
             count += i;
         }
         assertEquals(6, count);
