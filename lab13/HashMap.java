@@ -1,6 +1,5 @@
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.NoSuchElementException;
 
 public class HashMap<K, V> implements Map61BL<K, V> {
     private LinkedList<Entry<K, V>>[] entries;
@@ -91,7 +90,7 @@ public class HashMap<K, V> implements Map61BL<K, V> {
                 int linkedIndex = 0;
                 while (linkedIndex < copy[i].size() && copy[i].get(linkedIndex) != null) {
                     Entry add = new Entry(copy[i].get(linkedIndex).key
-									, copy[i].get(linkedIndex).value);
+                                    ,copy[i].get(linkedIndex).value);
                     int index = Math.floorMod(add.key.hashCode(), this.entries.length);
                     this.entries[index].addLast(add);
                     linkedIndex += 1;
