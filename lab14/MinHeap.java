@@ -159,7 +159,7 @@ public class MinHeap<E extends Comparable<E>> {
         this.swap(1, this.size);
         this.contents.remove(this.size);
         this.size--;
-        this.bubbleUp(this.size);
+        this.bubbleDown(1);
         return peek;
     }
 
