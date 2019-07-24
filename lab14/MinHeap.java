@@ -160,6 +160,7 @@ public class MinHeap<E extends Comparable<E>> {
         this.contents.remove(this.size);
         this.size--;
         this.bubbleUp(this.size);
+        return peek;
     }
 
     /* Replaces and updates the position of ELEMENT inside the MinHeap, which
