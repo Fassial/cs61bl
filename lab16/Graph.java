@@ -230,22 +230,44 @@ public class Graph implements Iterable<Integer> {
     private class TopologicalIterator implements Iterator<Integer> {
 
         private Stack<Integer> fringe;
+        private HashSet<Integer> visited;
+        private int[] currentInDegree;
 
         // TODO: Instance variables here!
 
         TopologicalIterator() {
             fringe = new Stack<Integer>();
             // TODO: YOUR CODE HERE
+            visited = new HashSet<Integer>();
+            currentInDegree = new int[vertexCount];
+            for (int i = 0; i < vertexCount; i++) {
+                currentInDegree[i] = inDegree(i);
+                if (inDegree(i) == 0) {
+                    fringe.push(i);
+                }
+            }
         }
 
         public boolean hasNext() {
             // TODO: YOUR CODE HERE
-            return false;
+            // return false;
+            return !fringe.isEmpty();
         }
 
         public Integer next() {
             // TODO: YOUR CODE HERE
-            return 0;
+            // return 0;
+            Integer result = this.fringe.pop();
+            for (Edge edge : adjLists[result]) {
+                currentInDegree[edge.getTo()]--;
+            }
+            visited.add(result);
+            for (int i = 0; i < vertexCount; i++) {
+                if (!fringe.contains(i) && !visited.contains(i) && currentInDegree[i] == 0) {
+                    fringe.push(i);
+                }
+            }
+            return result;
         }
 
         public void remove() {
