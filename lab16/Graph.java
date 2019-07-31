@@ -29,15 +29,15 @@ public class Graph implements Iterable<Integer> {
        weight WEIGHT. */
     public void addEdge(int v1, int v2, int weight) {
         // TODO: YOUR CODE HERE
-		Iterator<Edge> adjIterator = adjLists[v1].iterator();
+        Iterator<Edge> adjIterator = adjLists[v1].iterator();
         while (adjIterator.hasNext()) {
             Edge curEdge = adjIterator.next();
             if (curEdge.getTo() == v2) {
                 curEdge.setWeight(weight);
-				return;
+                return;
             }
         }
-		adjLists[v1].add(new Edge(v1, v2, weight));
+        adjLists[v1].add(new Edge(v1, v2, weight));
     }
 
     /* Adds an undirected Edge (V1, V2) to the graph with weight WEIGHT. If the
@@ -45,8 +45,8 @@ public class Graph implements Iterable<Integer> {
        weight WEIGHT. */
     public void addUndirectedEdge(int v1, int v2, int weight) {
         // TODO: YOUR CODE HERE
-		addEdge(v1, v2, weight);
-		addEdge(v2, v1, weight);
+        addEdge(v1, v2, weight);
+        addEdge(v2, v1, weight);
     }
 
     /* Returns true if there exists an Edge from vertex FROM to vertex TO.
@@ -54,7 +54,7 @@ public class Graph implements Iterable<Integer> {
     public boolean isAdjacent(int from, int to) {
         // TODO: YOUR CODE HERE
         // return false;
-		Iterator<Edge> adjIterator = adjLists[from].iterator();
+        Iterator<Edge> adjIterator = adjLists[from].iterator();
         while (adjIterator.hasNext()) {
             Edge curEdge = adjIterator.next();
             if (curEdge.getTo() == to) {
@@ -69,7 +69,7 @@ public class Graph implements Iterable<Integer> {
     public List<Integer> neighbors(int v) {
         // TODO: YOUR CODE HERE
         // return null;
-		List result = new LinkedList<>();
+        List result = new LinkedList<>();
         Iterator<Edge> neiIterator = adjLists[v].iterator();
         while (neiIterator.hasNext()) {
             Edge curEdge = neiIterator.next();
@@ -81,8 +81,8 @@ public class Graph implements Iterable<Integer> {
     public int inDegree(int v) {
         // TODO: YOUR CODE HERE
         // return 0;
-		int result = 0;
-		for (int i = 0; i < vertexCount; i++) {
+        int result = 0;
+        for (int i = 0; i < vertexCount; i++) {
             if (isAdjacent(i, v)) {
                 result++;
             }
@@ -106,31 +106,31 @@ public class Graph implements Iterable<Integer> {
 
         DFSIterator(int start) {
             // TODO: YOUR CODE HERE
-			this.fringe = new Stack<Integer>();
-			this.fringe.push(start);
-			this.visited = new HashSet<Integer>();
-			this.visited.add(start);
+            this.fringe = new Stack<Integer>();
+            this.fringe.push(start);
+            this.visited = new HashSet<Integer>();
+            this.visited.add(start);
         }
 
         public boolean hasNext() {
             // TODO: YOUR CODE HERE
             // return false;
-			return !this.fringe.isEmpty();
+            return !this.fringe.isEmpty();
         }
 
         public Integer next() {
             // TODO: YOUR CODE HERE
             // return null;
-			Integer result = this.fringe.pop();
-			Iterator<Edge> dfsIterator = adjLists[result].iterator();
-			while (dfsIterator.hasNext()) {
-				Edge edge = dfsIterator.next();
-				if (!this.visited.contains(edge.getTo())) {
-					this.fringe.push(edge.getTo());
-					this.visited.add(edge.getTo());
-				}
-			}
-			return result;
+            Integer result = this.fringe.pop();
+            Iterator<Edge> dfsIterator = adjLists[result].iterator();
+            while (dfsIterator.hasNext()) {
+                Edge edge = dfsIterator.next();
+                if (!this.visited.contains(edge.getTo())) {
+                    this.fringe.push(edge.getTo());
+                    this.visited.add(edge.getTo());
+                }
+            }
+            return result;
         }
 
         public void remove() {
@@ -150,15 +150,15 @@ public class Graph implements Iterable<Integer> {
         }
         return result;
     }
-	
-	public ArrayList<Integer> visitAll(int start) {
-		ArrayList<Integer> result = new ArrayList<Integer>();
-		Iterator<Integer> dfsIterator = new DFSIterator(start);
-		while (dfsIterator.hasNext()) {
-			result.add(dfsIterator.next());
-		}
-		return result;
-	}
+    
+    public ArrayList<Integer> visitAll(int start) {
+        ArrayList<Integer> result = new ArrayList<Integer>();
+        Iterator<Integer> dfsIterator = new DFSIterator(start);
+        while (dfsIterator.hasNext()) {
+            result.add(dfsIterator.next());
+        }
+        return result;
+    }
 
 
     /* Returns true iff there exists a path from START to STOP. Assumes both
@@ -166,17 +166,17 @@ public class Graph implements Iterable<Integer> {
     public boolean pathExists(int start, int stop) {
         // TODO: YOUR CODE HERE
         // return false;
-		if (start == stop) {
-			return true;
-		} else {
-			ArrayList<Integer> result = visitAll(start);
-			for (int i = 0; i < result.size(); i++) {
-				if (result.get(i) == stop) {
-					return true;
-				}
-			}
-			return false;
-		}
+        if (start == stop) {
+            return true;
+        } else {
+            ArrayList<Integer> result = visitAll(start);
+            for (int i = 0; i < result.size(); i++) {
+                if (result.get(i) == stop) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
 
@@ -185,13 +185,13 @@ public class Graph implements Iterable<Integer> {
     public List<Integer> path(int start, int stop) {
         // TODO: YOUR CODE HERE
         // return null;
-		ArrayList<Integer> result = new ArrayList<Integer>();
+        ArrayList<Integer> result = new ArrayList<Integer>();
         // you supply the body of this method
         if (start == stop) {
             result.add(start);
             return result;
         } else if (!pathExists(start, stop)) {
-            return result;		// empty ArrayList
+            return result;        // empty ArrayList
         } else {
             ArrayList<Integer> visited = new ArrayList<>();
             Iterator<Integer> dfsIterator = new DFSIterator(start);
@@ -265,22 +265,22 @@ public class Graph implements Iterable<Integer> {
             this.to = to;
             this.weight = weight;
         }
-		
-		public int getFrom() {
-			return this.from;
-		}
-		
-		public int getTo() {
-			return this.to;
-		}
-		
-		public int getWeight() {
-			return this.weight;
-		}
-		
-		public void setWeight(int weight) {
-			this.weight = weight;
-		}
+        
+        public int getFrom() {
+            return this.from;
+        }
+        
+        public int getTo() {
+            return this.to;
+        }
+        
+        public int getWeight() {
+            return this.weight;
+        }
+        
+        public void setWeight(int weight) {
+            this.weight = weight;
+        }
 
         public String toString() {
             return "(" + from + ", " + to + ", weight = " + weight + ")";
