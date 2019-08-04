@@ -51,7 +51,7 @@ public class MinHeapPQ<T> implements PriorityQueue<T> {
     /* Returns true if ITEM is stored in our MinHeapPQ. Note: Any priority value
        for this dummy PriorityItem would work. */
     public boolean contains(T item) {
-        return heap.contains(new PriorityItem(item, 0));
+        return this.heap.contains(new PriorityItem(item, 0));
     }
 
     @Override
